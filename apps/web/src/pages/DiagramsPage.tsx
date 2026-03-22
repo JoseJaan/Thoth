@@ -12,12 +12,22 @@ export default function DiagramsPage() {
   const utils = trpc.useUtils();
 
   const handleCreate = async () => {
-    const diagram = await createDiagram.mutateAsync({
-      title: "Novo diagrama",
+    // Generate incremented name if "Novo diagrama" already exists
+    const existing = diagramsList.data ?? [];
+    const baseName = "Novo diagrama";
+    let finalName = baseName;
+    const existingNames = new Set(existing.map((d: any) => d.title));
+    if (existingNames.has(finalName)) {
+      let i = 1;
+      while (existingNames.has(`${baseName}-${i}`)) i++;
+      finalName = `${baseName}-${i}`;
+    }
+
+    await createDiagram.mutateAsync({
+      title: finalName,
       data: "{}",
     });
     utils.diagrams.list.invalidate();
-    setSelectedDiagramId(diagram.id);
   };
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {

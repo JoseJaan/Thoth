@@ -66,6 +66,13 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
   const diagram = trpc.diagrams.getById.useQuery({ id: diagramId });
   const updateDiagram = trpc.diagrams.update.useMutation();
 
+  // Sync title from fetched data (via effect, not during render)
+  useEffect(() => {
+    if (diagram.data?.title && !title) {
+      setTitle(diagram.data.title);
+    }
+  }, [diagram.data?.title]);
+
   const debouncedSave = useDebouncedCallback(
     (data: string) => {
       updateDiagram.mutate({ id: diagramId, data });
@@ -74,10 +81,14 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
   );
 
   const handleChange = useCallback(
-    (elements: any[], appState: any) => {
+    (elements: any[], appState: any, files: any) => {
       // Only save if there are elements
       if (elements.length > 0) {
-        const data = JSON.stringify({ elements, appState: { viewBackgroundColor: appState.viewBackgroundColor } });
+        const data = JSON.stringify({
+          elements,
+          appState: { viewBackgroundColor: appState.viewBackgroundColor },
+          files: files ?? {},
+        });
         debouncedSave(data);
       }
     },
@@ -85,25 +96,36 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
   );
 
   const handleSaveThumbnail = async () => {
-    if (!excalidrawRef.current) return;
+    const api = excalidrawRef.current;
+    if (!api) return;
     try {
-      const elements = excalidrawRef.current.getSceneElements().filter((el: any) => !el.isDeleted);
+      const allElements = api.getSceneElements();
+      const elements = allElements.filter((el: any) => !el.isDeleted);
       if (elements.length === 0) return;
 
+      const files = api.getFiles();
       const blob = await exportToBlob({
         elements,
-        mimeType: "image/png",
-        getDimensions: () => ({ width: 320, height: 200, scale: 1 }),
-        files: excalidrawRef.current.getFiles(),
+        appState: {
+          exportWithDarkMode: false,
+          viewBackgroundColor: "#ffffff",
+        },
+        files: files ?? null,
+        mimeType: "image/png" as any,
         maxWidthOrHeight: 320,
       });
 
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result as string;
-        updateDiagram.mutate({ id: diagramId, thumbnail: base64 });
-      };
-      reader.readAsDataURL(blob);
+      return new Promise<void>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64 = reader.result as string;
+          updateDiagram.mutate(
+            { id: diagramId, thumbnail: base64 },
+            { onSettled: () => resolve() }
+          );
+        };
+        reader.readAsDataURL(blob);
+      });
     } catch (err) {
       console.error("Error generating thumbnail:", err);
     }
@@ -132,15 +154,13 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
   // Parse initial data
   let initialElements: any[] = [];
   let initialAppState: any = undefined;
+  let initialFiles: any = undefined;
   try {
     const parsed = JSON.parse(diagram.data.data);
     if (parsed.elements) initialElements = parsed.elements;
     if (parsed.appState) initialAppState = parsed.appState;
+    if (parsed.files) initialFiles = parsed.files;
   } catch {}
-
-  if (!title && diagram.data.title) {
-    setTitle(diagram.data.title);
-  }
 
   return (
     <div className="h-full flex flex-col">
@@ -202,6 +222,7 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
                     ...initialAppState,
                     theme: "light",
                   },
+                  files: initialFiles,
                 }}
                 onChange={handleChange}
                 langCode="pt-BR"
