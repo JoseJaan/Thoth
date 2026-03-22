@@ -188,3 +188,51 @@ body {
   border-radius: 0.5em;
   margin: 1em 0;
 }
+
+/* Prevent Tailwind preflight from breaking Excalidraw UI */
+.excalidraw,
+.excalidraw * {
+  border-style: initial;
+  border-width: initial;
+  box-sizing: initial;
+}
+.excalidraw button {
+  background-color: initial;
+  background-image: initial;
+  color: initial;
+  line-height: initial;
+}
+.excalidraw input,
+.excalidraw select,
+.excalidraw textarea {
+  color: initial;
+  border: initial;
+  padding: initial;
+}
+.excalidraw svg {
+  display: initial;
+}
+.excalidraw img {
+  display: initial;
+}
+.excalidraw a {
+  color: initial;
+  text-decoration: initial;
+}
+.excalidraw h1,
+.excalidraw h2,
+.excalidraw h3,
+.excalidraw h4,
+.excalidraw h5,
+.excalidraw h6,
+.excalidraw p {
+  margin: initial;
+  font-size: initial;
+  font-weight: initial;
+}
+.excalidraw ol,
+.excalidraw ul {
+  list-style: initial;
+  margin: initial;
+  padding: initial;
+}

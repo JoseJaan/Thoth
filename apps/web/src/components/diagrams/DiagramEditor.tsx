@@ -44,19 +44,19 @@ interface DiagramEditorProps {
 export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps) {
   const [editingTitle, setEditingTitle] = useState(false);
   const [title, setTitle] = useState("");
-  const [containerSize, setContainerSize] = useState<{ width: number; height: number } | null>(null);
+  const [ready, setReady] = useState(false);
   const [renderKey, setRenderKey] = useState(0);
   const excalidrawRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Use ResizeObserver to get actual container dimensions before rendering Excalidraw
+  // Wait for container to have real dimensions before rendering Excalidraw
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     const observer = new ResizeObserver((entries) => {
       const { width, height } = entries[0].contentRect;
       if (width > 0 && height > 0) {
-        setContainerSize({ width, height });
+        setReady(true);
       }
     });
     observer.observe(el);
@@ -190,9 +190,9 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
 
       {/* Excalidraw canvas */}
       <div ref={containerRef} className="flex-1 relative" style={{ minHeight: 0 }}>
-        {containerSize && (
+        {ready && (
           <ExcalidrawErrorBoundary onRetry={() => setRenderKey((k) => k + 1)}>
-            <div style={{ width: containerSize.width, height: containerSize.height, position: "absolute", top: 0, left: 0 }}>
+            <div style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}>
               <Excalidraw
                 key={renderKey}
                 ref={excalidrawRef}

@@ -33,7 +33,8 @@
       "Bash(lsof -ti:3001)",
       "Bash(xargs kill:*)",
       "Bash(pnpm -r build)",
-      "Bash(grep -E \"\\\\.\\(ts|tsx\\)$\")"
+      "Bash(grep -E \"\\\\.\\(ts|tsx\\)$\")",
+      "Bash(find C:/Users/josea/Documents/ComputerScience/ProjetosPessoais/Thoth/node_modules/.pnpm -path *excalidraw* -name *.css)"
     ]
   }
 }
