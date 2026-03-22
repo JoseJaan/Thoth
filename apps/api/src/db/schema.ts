@@ -32,6 +32,7 @@ export const documents = sqliteTable("documents", {
   fileSize: integer("file_size").notNull(),
   readingStatus: text("reading_status").notNull().default("unread"),
   extractedText: text("extracted_text"),
+  summary: text("summary"),
   folderId: text("folder_id").references(() => documentFolders.id, { onDelete: "set null" }),
   createdAt: text("created_at").notNull(),
   updatedAt: text("updated_at").notNull(),

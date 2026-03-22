@@ -6,6 +6,10 @@ import { config } from "./config.js";
 import { appRouter } from "./trpc/router.js";
 import { createContext } from "./trpc/context.js";
 import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Ensure data directories exist
 fs.mkdirSync(config.pdfsDir, { recursive: true });
@@ -26,6 +30,25 @@ await app.register(fastifyTRPCPlugin, {
     createContext,
   },
 });
+
+// Serve frontend static files in production
+const webDistPath = path.resolve(__dirname, "../../../web/dist");
+if (fs.existsSync(webDistPath)) {
+  await app.register(fastifyStatic, {
+    root: webDistPath,
+    prefix: "/",
+    decorateReply: false,
+  });
+
+  // SPA fallback: serve index.html for non-API routes
+  app.setNotFoundHandler((req, reply) => {
+    if (req.url.startsWith("/trpc") || req.url.startsWith("/uploads")) {
+      reply.code(404).send({ error: "Not found" });
+    } else {
+      reply.sendFile("index.html", webDistPath);
+    }
+  });
+}
 
 try {
   await app.listen({ port: config.port, host: config.host });

@@ -1,0 +1,7 @@
+- [x] No modal no superior direito de criar uma nota ou tarefa, o botão de criar tarefa não funciona
+- [x] Não é possível mover uma tarefa no quadro kanban
+- [x] No leitor de PDF, implemente a função de rolar o documento, em vez de passar pagina por pagina
+- [x] Na gestão de PDF, implemente uma função de adiconar um resumo geral, e nao apenas por página
+- [x] Na gestão de documentos, em importar pasta, adicione a opção de selecionar a pasta através do explorador de arquivos, em vez de digitar diretamente o caminho
+- [x] O sistema possui uma certa lentidão em diversas operações, (adicionar tags, criar tarefas/notas), corrija
+- [x] Conteinerize com docker

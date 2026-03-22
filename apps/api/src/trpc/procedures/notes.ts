@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eq, isNull, asc, desc } from "drizzle-orm";
+import { eq, isNull, asc, desc, inArray } from "drizzle-orm";
 import { router, publicProcedure } from "../trpc.js";
 import { notes, taggables, tags } from "../../db/schema.js";
 import { generateId, now } from "../../utils/id.js";
@@ -12,20 +12,24 @@ export const notesRouter = router({
       .where(eq(notes.isFolder, false))
       .orderBy(desc(notes.updatedAt));
 
-    // Get all tag associations for notes
     const noteIds = allNotes.map((n) => n.id);
     if (noteIds.length === 0) return [];
 
-    const allTaggables = await ctx.db
+    // Only fetch taggables for these specific notes
+    const noteTaggables = await ctx.db
       .select()
       .from(taggables)
-      .where(eq(taggables.taggableType, "note"));
+      .where(inArray(taggables.taggableId, noteIds));
 
-    const allTags = await ctx.db.select().from(tags);
-    const tagMap = new Map(allTags.map((t) => [t.id, t]));
+    // Only fetch the tags that are actually used
+    const usedTagIds = [...new Set(noteTaggables.map((tg) => tg.tagId))];
+    const usedTags = usedTagIds.length > 0
+      ? await ctx.db.select().from(tags).where(inArray(tags.id, usedTagIds))
+      : [];
+    const tagMap = new Map(usedTags.map((t) => [t.id, t]));
 
     return allNotes.map((note) => {
-      const noteTags = allTaggables
+      const noteTags = noteTaggables
         .filter((tg) => tg.taggableId === note.id)
         .map((tg) => tagMap.get(tg.tagId))
         .filter(Boolean);

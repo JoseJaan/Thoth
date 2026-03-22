@@ -145,6 +145,47 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
       {showImportFolder && (
         <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
           <p className="text-sm font-medium text-blue-800 mb-2">Importar PDFs de uma pasta</p>
+
+          {/* Option 1: Select folder via file explorer */}
+          <div className="flex gap-2 mb-3">
+            <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm border-2 border-dashed border-blue-300 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer">
+              <FolderInput size={16} className="text-blue-500" />
+              <span className="text-blue-700">Selecionar pasta pelo explorador</span>
+              <input
+                type="file"
+                {...({ webkitdirectory: "", directory: "" } as any)}
+                multiple
+                className="hidden"
+                onChange={async (e) => {
+                  const files = e.target.files;
+                  if (!files || files.length === 0) return;
+                  const pdfFiles = Array.from(files).filter((f) =>
+                    f.name.toLowerCase().endsWith(".pdf")
+                  );
+                  if (pdfFiles.length === 0) return;
+                  for (const file of pdfFiles) {
+                    const buffer = await file.arrayBuffer();
+                    const base64 = btoa(
+                      new Uint8Array(buffer).reduce(
+                        (data, byte) => data + String.fromCharCode(byte),
+                        ""
+                      )
+                    );
+                    await uploadDoc.mutateAsync({
+                      fileName: file.name,
+                      fileData: base64,
+                      folderId: currentFolderId,
+                    });
+                  }
+                  utils.documents.list.invalidate();
+                  setShowImportFolder(false);
+                }}
+              />
+            </label>
+          </div>
+
+          {/* Option 2: Type path manually (server-side) */}
+          <p className="text-xs text-blue-600 mb-1">Ou digite o caminho da pasta no servidor:</p>
           <div className="flex gap-2">
             <input
               type="text"
@@ -171,6 +212,9 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
             <p className="text-sm text-green-600 mt-2">
               {importFromFolder.data.imported} PDFs importados!
             </p>
+          )}
+          {uploadDoc.isPending && (
+            <p className="text-sm text-blue-500 mt-2">Enviando PDFs...</p>
           )}
         </div>
       )}

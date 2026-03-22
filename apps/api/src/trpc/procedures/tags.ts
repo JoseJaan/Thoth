@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eq, and } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 import { router, publicProcedure } from "../trpc.js";
 import { tags, taggables } from "../../db/schema.js";
 import { generateId } from "../../utils/id.js";
@@ -68,8 +68,7 @@ export const tagsRouter = router({
       const tagIds = associations.map((a) => a.tagId);
       if (tagIds.length === 0) return [];
 
-      const allTags = await ctx.db.select().from(tags);
-      return allTags.filter((t) => tagIds.includes(t.id));
+      return ctx.db.select().from(tags).where(inArray(tags.id, tagIds));
     }),
 
   addToEntity: publicProcedure

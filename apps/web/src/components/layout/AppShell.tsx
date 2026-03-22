@@ -108,6 +108,10 @@ export default function AppShell() {
             setCurrentPage("notes");
             setQuickCaptureOpen(false);
           }}
+          onTaskCreated={() => {
+            setCurrentPage("tasks");
+            setQuickCaptureOpen(false);
+          }}
         />
       )}
 

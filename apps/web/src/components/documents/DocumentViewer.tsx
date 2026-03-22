@@ -1,19 +1,22 @@
-import { useState } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import {
   ArrowLeft,
-  ChevronLeft,
-  ChevronRight,
   ZoomIn,
   ZoomOut,
   Plus,
   Trash2,
   BookOpen,
+  FileText,
 } from "lucide-react";
+import { useEditor, EditorContent } from "@tiptap/react";
+import { StarterKit } from "@tiptap/starter-kit";
+import { Placeholder } from "@tiptap/extension-placeholder";
 import { trpc } from "../../trpc";
 import DocumentNoteEditor from "./DocumentNoteEditor";
+import { useDebouncedCallback } from "../../hooks/useDebounce";
 
 // Configure PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -34,6 +37,8 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [scale, setScale] = useState(1.2);
+  const pageRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const doc = trpc.documents.getById.useQuery({ id: documentId });
   const docNotes = trpc.documents.listNotes.useQuery({ documentId });
@@ -41,6 +46,37 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
   const createNote = trpc.documents.createNote.useMutation();
   const deleteNote = trpc.documents.deleteNote.useMutation();
   const utils = trpc.useUtils();
+
+  // Track current page via IntersectionObserver
+  useEffect(() => {
+    if (numPages === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const pageNum = Number(entry.target.getAttribute("data-page"));
+            if (pageNum) setCurrentPage(pageNum);
+          }
+        }
+      },
+      {
+        root: scrollContainerRef.current,
+        threshold: 0.5,
+      }
+    );
+
+    pageRefs.current.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [numPages]);
+
+  const setPageRef = useCallback((pageNum: number, el: HTMLDivElement | null) => {
+    if (el) {
+      pageRefs.current.set(pageNum, el);
+    } else {
+      pageRefs.current.delete(pageNum);
+    }
+  }, []);
 
   if (!doc.data) {
     return (
@@ -114,25 +150,11 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
       <div className="flex-1 flex overflow-hidden">
         {/* PDF Viewer */}
         <div className="flex-1 flex flex-col bg-slate-100">
-          {/* Page controls */}
+          {/* Page indicator + Zoom controls */}
           <div className="flex items-center justify-center gap-4 py-2 bg-white border-b border-slate-100">
-            <button
-              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-              disabled={currentPage <= 1}
-              className="p-1 hover:bg-slate-100 rounded disabled:opacity-30"
-            >
-              <ChevronLeft size={18} />
-            </button>
             <span className="text-sm text-slate-600">
               {currentPage} / {numPages}
             </span>
-            <button
-              onClick={() => setCurrentPage(Math.min(numPages, currentPage + 1))}
-              disabled={currentPage >= numPages}
-              className="p-1 hover:bg-slate-100 rounded disabled:opacity-30"
-            >
-              <ChevronRight size={18} />
-            </button>
             <div className="w-px h-5 bg-slate-200 mx-2" />
             <button
               onClick={() => setScale(Math.max(0.5, scale - 0.1))}
@@ -151,8 +173,8 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
             </button>
           </div>
 
-          {/* PDF rendering */}
-          <div className="flex-1 overflow-auto flex justify-center p-4">
+          {/* PDF rendering - continuous scroll */}
+          <div ref={scrollContainerRef} className="flex-1 overflow-auto">
             <Document
               file={pdfUrl}
               onLoadSuccess={({ numPages }) => setNumPages(numPages)}
@@ -167,12 +189,22 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                 </div>
               }
             >
-              <Page
-                pageNumber={currentPage}
-                scale={scale}
-                renderTextLayer={true}
-                renderAnnotationLayer={true}
-              />
+              <div className="flex flex-col items-center gap-4 p-4">
+                {Array.from({ length: numPages }, (_, i) => (
+                  <div
+                    key={i + 1}
+                    ref={(el) => setPageRef(i + 1, el)}
+                    data-page={i + 1}
+                  >
+                    <Page
+                      pageNumber={i + 1}
+                      scale={scale}
+                      renderTextLayer={true}
+                      renderAnnotationLayer={true}
+                    />
+                  </div>
+                ))}
+              </div>
             </Document>
           </div>
         </div>
@@ -199,6 +231,12 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
           </div>
 
           <div className="flex-1 overflow-auto p-3 space-y-3">
+            {/* General Summary */}
+            <SummaryEditor
+              documentId={documentId}
+              initialSummary={doc.data!.summary}
+            />
+
             {docNotes.data?.map((note: any) => (
               <div
                 key={note.id}
@@ -234,6 +272,54 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function SummaryEditor({ documentId, initialSummary }: { documentId: string; initialSummary: string | null }) {
+  const updateDoc = trpc.documents.update.useMutation();
+
+  const debouncedSave = useDebouncedCallback(
+    (summary: string) => {
+      updateDoc.mutate({ id: documentId, summary });
+    },
+    1000
+  );
+
+  const parseContent = useCallback(() => {
+    if (!initialSummary) return undefined;
+    try {
+      const parsed = JSON.parse(initialSummary);
+      if (parsed && typeof parsed === "object" && parsed.type) return parsed;
+    } catch {}
+    return undefined;
+  }, [initialSummary]);
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Placeholder.configure({
+        placeholder: "Escreva um resumo geral do documento...",
+      }),
+    ],
+    content: parseContent(),
+    onUpdate: ({ editor }) => {
+      debouncedSave(JSON.stringify(editor.getJSON()));
+    },
+    editorProps: {
+      attributes: {
+        class: "prose prose-sm prose-slate max-w-none focus:outline-none p-3 min-h-[60px]",
+      },
+    },
+  });
+
+  return (
+    <div className="border border-amber-200 rounded-lg overflow-hidden bg-amber-50/30">
+      <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 border-b border-amber-200">
+        <FileText size={12} className="text-amber-600" />
+        <span className="text-xs font-medium text-amber-700">Resumo Geral</span>
+      </div>
+      <EditorContent editor={editor} />
     </div>
   );
 }

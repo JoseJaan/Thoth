@@ -15,6 +15,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  useDroppable,
   type DragStartEvent,
   type DragEndEvent,
   type DragOverEvent,
@@ -98,6 +99,41 @@ function SortableTaskCard({ task, onSelect, onDelete }: TaskCardProps) {
   );
 }
 
+function TaskCardOverlay({ task }: { task: any }) {
+  const priority = priorityConfig[task.priority as keyof typeof priorityConfig];
+  return (
+    <div className="bg-white rounded-lg border border-emerald-300 p-3 shadow-lg opacity-90 w-[280px]">
+      <div className="flex items-start gap-2">
+        <GripVertical size={14} className="text-slate-300 mt-0.5" />
+        <div className="flex-1 min-w-0">
+          <h4 className="text-sm font-medium text-slate-800 truncate">{task.title}</h4>
+          <div className="flex items-center gap-2 mt-1.5">
+            <span
+              className="flex items-center gap-0.5 text-[10px] font-medium px-1.5 py-0.5 rounded-full"
+              style={{ color: priority.color, backgroundColor: `${priority.color}15` }}
+            >
+              {priority.icon} {priority.label}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DroppableColumn({ id, bg, children }: { id: string; bg: string; children: React.ReactNode }) {
+  const { setNodeRef, isOver } = useDroppable({ id });
+  return (
+    <div
+      ref={setNodeRef}
+      className={`flex-1 rounded-xl p-2 space-y-2 min-h-[200px] transition-colors ${isOver ? "ring-2 ring-emerald-400 ring-opacity-50" : ""}`}
+      style={{ backgroundColor: bg }}
+    >
+      {children}
+    </div>
+  );
+}
+
 export default function TasksPage() {
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -141,9 +177,13 @@ export default function TasksPage() {
     }
 
     if (activeTask.status !== targetStatus) {
+      // Optimistic update
+      utils.tasks.list.setData({}, (old: any) =>
+        old?.map((t: any) => t.id === activeTask.id ? { ...t, status: targetStatus } : t)
+      );
       updateTask.mutate(
         { id: activeTask.id, status: targetStatus as any },
-        { onSuccess: () => utils.tasks.list.invalidate() }
+        { onError: () => utils.tasks.list.invalidate() }
       );
     }
   };
@@ -210,10 +250,7 @@ export default function TasksPage() {
                   </div>
 
                   {/* Column body */}
-                  <div
-                    className="flex-1 rounded-xl p-2 space-y-2 min-h-[200px]"
-                    style={{ backgroundColor: col.bg }}
-                  >
+                  <DroppableColumn id={col.id} bg={col.bg}>
                     <SortableContext
                       items={colTasks.map((t: any) => t.id)}
                       strategy={verticalListSortingStrategy}
@@ -259,11 +296,16 @@ export default function TasksPage() {
                         </div>
                       </div>
                     )}
-                  </div>
+                  </DroppableColumn>
                 </div>
               );
             })}
           </div>
+          <DragOverlay>
+            {activeId && allTasks.data?.find((t: any) => t.id === activeId) ? (
+              <TaskCardOverlay task={allTasks.data.find((t: any) => t.id === activeId)!} />
+            ) : null}
+          </DragOverlay>
         </DndContext>
       </div>
 

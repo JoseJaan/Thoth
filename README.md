@@ -7,7 +7,7 @@
 | Funcionalidade | Descricao |
 |---|---|
 | **Notas** | Editor rich-text com Tiptap (listas, tabelas, codigo, imagens, links) e organizacao hierarquica em pastas |
-| **Documentos/PDFs** | Upload, visualizacao inline, extracao de texto, status de leitura (nao lido, para ler, lendo, lido) e anotacoes por pagina |
+| **Documentos/PDFs** | Upload, visualizacao inline com scroll continuo, extracao de texto, status de leitura, resumo geral e anotacoes por pagina. Importacao de pastas via explorador de arquivos |
 | **Diagramas** | Editor visual com Excalidraw para criar diagramas, fluxogramas e esquemas |
 | **Tarefas/Kanban** | Quadro Kanban com colunas (A Fazer, Em Progresso, Concluido), drag-and-drop, prioridades e datas de entrega |
 | **Pomodoro** | Timer integrado (25min) vinculavel a tarefas para controle de foco |
@@ -15,7 +15,7 @@
 | **Tags** | Sistema polimorfico de tags com cores para categorizar notas, documentos, diagramas e tarefas |
 | **Busca Global** | Pesquisa unificada em notas, documentos, diagramas e tarefas (Ctrl+Shift+K) |
 | **Links** | Conexoes bidirecionais entre qualquer entidade do sistema |
-| **Quick Capture** | Criacao rapida de notas com Ctrl+Shift+N |
+| **Quick Capture** | Criacao rapida de notas e tarefas com Ctrl+Shift+N |
 
 ## Arquitetura
 
@@ -89,8 +89,11 @@ graph LR
 
 - **Node.js** >= 20.0.0
 - **pnpm** (gerenciador de pacotes)
+- **Docker** (opcional, para execucao via container)
 
 ## Inicio Rapido
+
+### Desenvolvimento local
 
 ```bash
 # 1. Clonar o repositorio
@@ -110,6 +113,17 @@ pnpm dev
 A aplicacao estara disponivel em:
 - **Frontend:** http://localhost:5173
 - **API:** http://localhost:3001
+
+### Docker
+
+```bash
+# Construir e iniciar
+docker compose up -d
+
+# A aplicacao estara disponivel em http://localhost:3001
+```
+
+O container serve tanto a API quanto o frontend buildado em uma unica porta (3001). Os dados (SQLite + PDFs) sao persistidos no volume `./data`.
 
 ## Estrutura do Projeto
 
@@ -189,6 +203,9 @@ thoth/
 │
 ├── package.json                    # Root workspace
 ├── pnpm-workspace.yaml
+├── Dockerfile                     # Build multi-stage
+├── docker-compose.yml             # Orquestracao
+├── .dockerignore
 └── CLAUDE.md
 ```
 
@@ -228,6 +245,7 @@ erDiagram
         integer file_size
         text reading_status
         text extracted_text
+        text summary
         text folder_id FK
         text created_at
         text updated_at

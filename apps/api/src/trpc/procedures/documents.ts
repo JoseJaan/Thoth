@@ -195,6 +195,7 @@ export const documentsRouter = router({
         title: z.string().optional(),
         authors: z.string().nullable().optional(),
         readingStatus: z.enum(["unread", "to_read", "reading", "read"]).optional(),
+        summary: z.string().nullable().optional(),
         folderId: z.string().nullable().optional(),
       })
     )

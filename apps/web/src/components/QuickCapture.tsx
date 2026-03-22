@@ -5,15 +5,17 @@ import { trpc } from "../trpc";
 interface QuickCaptureProps {
   onClose: () => void;
   onNoteCreated: (id: string) => void;
+  onTaskCreated: () => void;
 }
 
 type CaptureType = "note" | "task";
 
-export default function QuickCapture({ onClose, onNoteCreated }: QuickCaptureProps) {
+export default function QuickCapture({ onClose, onNoteCreated, onTaskCreated }: QuickCaptureProps) {
   const [type, setType] = useState<CaptureType>("note");
   const [title, setTitle] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const createNote = trpc.notes.create.useMutation();
+  const createTask = trpc.tasks.create.useMutation();
   const utils = trpc.useUtils();
 
   useEffect(() => {
@@ -42,8 +44,14 @@ export default function QuickCapture({ onClose, onNoteCreated }: QuickCapturePro
       });
       utils.notes.list.invalidate();
       onNoteCreated(note.id);
+    } else {
+      await createTask.mutateAsync({
+        title: title.trim(),
+        status: "todo",
+      });
+      utils.tasks.list.invalidate();
+      onTaskCreated();
     }
-    // TODO: task creation will be added in Phase 4
   };
 
   return (
@@ -100,7 +108,7 @@ export default function QuickCapture({ onClose, onNoteCreated }: QuickCapturePro
             </p>
             <button
               type="submit"
-              disabled={!title.trim() || createNote.isPending}
+              disabled={!title.trim() || createNote.isPending || createTask.isPending}
               className="px-4 py-1.5 text-sm text-white rounded-lg font-medium disabled:opacity-50 transition-opacity"
               style={{
                 backgroundColor:
