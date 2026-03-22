@@ -62,13 +62,19 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
       },
       {
         root: scrollContainerRef.current,
-        threshold: 0.5,
+        rootMargin: "200px 0px",
+        threshold: 0.1,
       }
     );
 
     pageRefs.current.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, [numPages]);
+
+  // Buffer: only render pages near the current one
+  const PAGE_BUFFER = 3;
+  const isPageVisible = (pageNum: number) =>
+    Math.abs(pageNum - currentPage) <= PAGE_BUFFER;
 
   const setPageRef = useCallback((pageNum: number, el: HTMLDivElement | null) => {
     if (el) {
@@ -91,7 +97,10 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
   const handleStatusChange = (status: string) => {
     updateDoc.mutate(
       { id: documentId, readingStatus: status as any },
-      { onSuccess: () => utils.documents.getById.invalidate({ id: documentId }) }
+      { onSuccess: () => {
+        utils.documents.getById.invalidate({ id: documentId });
+        utils.documents.list.invalidate();
+      }}
     );
   };
 
@@ -195,13 +204,16 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                     key={i + 1}
                     ref={(el) => setPageRef(i + 1, el)}
                     data-page={i + 1}
+                    style={!isPageVisible(i + 1) ? { height: `${Math.round(800 * scale)}px`, width: `${Math.round(600 * scale)}px` } : undefined}
                   >
-                    <Page
-                      pageNumber={i + 1}
-                      scale={scale}
-                      renderTextLayer={true}
-                      renderAnnotationLayer={true}
-                    />
+                    {isPageVisible(i + 1) && (
+                      <Page
+                        pageNumber={i + 1}
+                        scale={scale}
+                        renderTextLayer={true}
+                        renderAnnotationLayer={true}
+                      />
+                    )}
                   </div>
                 ))}
               </div>

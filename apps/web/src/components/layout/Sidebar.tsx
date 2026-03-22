@@ -62,7 +62,7 @@ function NoteTreeItem({ note, selectedNoteId, onSelect, onDelete, level }: NoteT
   return (
     <div>
       <div
-        className={`group flex items-center gap-1 px-2 py-1 rounded-md cursor-pointer text-sm transition-colors ${
+        className={`group relative flex items-center gap-1 px-2 py-1 rounded-md cursor-pointer text-sm transition-colors ${
           isSelected
             ? "bg-amber-100 text-amber-900 font-medium"
             : "hover:bg-slate-100 text-slate-700"
@@ -94,7 +94,7 @@ function NoteTreeItem({ note, selectedNoteId, onSelect, onDelete, level }: NoteT
           <MoreHorizontal size={12} />
         </button>
         {showMenu && (
-          <div className="absolute right-2 mt-6 bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50">
+          <div className="absolute right-0 top-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50">
             <button
               className="flex items-center gap-2 px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 w-full"
               onClick={(e) => {

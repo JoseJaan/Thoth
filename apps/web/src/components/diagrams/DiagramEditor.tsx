@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { ArrowLeft, Save, Edit3 } from "lucide-react";
 import { trpc } from "../../trpc";
 import { useDebouncedCallback } from "../../hooks/useDebounce";
@@ -14,7 +14,15 @@ interface DiagramEditorProps {
 export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps) {
   const [editingTitle, setEditingTitle] = useState(false);
   const [title, setTitle] = useState("");
+  const [ready, setReady] = useState(false);
   const excalidrawRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Defer Excalidraw render until container has dimensions
+  useEffect(() => {
+    const timer = requestAnimationFrame(() => setReady(true));
+    return () => cancelAnimationFrame(timer);
+  }, []);
 
   const diagram = trpc.diagrams.getById.useQuery({ id: diagramId });
   const updateDiagram = trpc.diagrams.update.useMutation();
@@ -141,21 +149,23 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
       </div>
 
       {/* Excalidraw canvas */}
-      <div className="flex-1 relative" style={{ minHeight: 0 }}>
-        <div style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}>
-        <Excalidraw
-          ref={excalidrawRef}
-          initialData={{
-            elements: initialElements,
-            appState: {
-              ...initialAppState,
-              theme: "light",
-            },
-          }}
-          onChange={handleChange}
-          langCode="pt-BR"
-        />
-        </div>
+      <div ref={containerRef} className="flex-1 relative" style={{ minHeight: 0 }}>
+        {ready && (
+          <div style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}>
+            <Excalidraw
+              ref={excalidrawRef}
+              initialData={{
+                elements: initialElements,
+                appState: {
+                  ...initialAppState,
+                  theme: "light",
+                },
+              }}
+              onChange={handleChange}
+              langCode="pt-BR"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
