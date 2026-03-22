@@ -1,7 +1,172 @@
-- [x] No modal no superior direito de criar uma nota ou tarefa, o botão de criar tarefa não funciona
-- [x] Não é possível mover uma tarefa no quadro kanban
-- [x] No leitor de PDF, implemente a função de rolar o documento, em vez de passar pagina por pagina
-- [x] Na gestão de PDF, implemente uma função de adiconar um resumo geral, e nao apenas por página
-- [x] Na gestão de documentos, em importar pasta, adicione a opção de selecionar a pasta através do explorador de arquivos, em vez de digitar diretamente o caminho
-- [x] O sistema possui uma certa lentidão em diversas operações, (adicionar tags, criar tarefas/notas), corrija
-- [x] Conteinerize com docker
+- Ao atualizar o status de um documento em "Documentos", a atualização não é refletida até que se atualiza a página
+- No menu lateral, ao clicar nos 3 pontinhos, a opção de excluir a nota aparece no outro lado da tela
+- Ao abrir um novo diagrama, a tela fica apenas branca, e no console é retornado "Warning: getTextContent - ignoring errors during "GetTextContent: page 91" task: "Error: Worker task was terminated". pdf.worker.min.mjs:25:1931
+Warning: getTextContent - ignoring errors during "GetTextContent: page 97" task: "Error: Worker task was terminated". 2 pdf.worker.min.mjs:25:1931
+Uncaught DOMException: CanvasRenderingContext2D.setTransform: Canvas exceeds max size.
+    Ez http://localhost:3001/assets/index-BdhW_d5_.js:601
+    Nde http://localhost:3001/assets/index-BdhW_d5_.js:601
+    Ide http://localhost:3001/assets/index-BdhW_d5_.js:601
+    OQe http://localhost:3001/assets/index-BdhW_d5_.js:668
+    L6 http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    HV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    M7 http://localhost:3001/assets/index-BdhW_d5_.js:49
+    KV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    H6 http://localhost:3001/assets/index-BdhW_d5_.js:49
+    FV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    jV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    TV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    MV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    qV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    P http://localhost:3001/assets/index-BdhW_d5_.js:26
+index-BdhW_d5_.js:601:6302
+Uncaught DOMException: CanvasRenderingContext2D.setTransform: Canvas exceeds max size.
+    Ez http://localhost:3001/assets/index-BdhW_d5_.js:601
+    Eme http://localhost:3001/assets/index-BdhW_d5_.js:668
+    RQe http://localhost:3001/assets/index-BdhW_d5_.js:668
+    NQe http://localhost:3001/assets/index-BdhW_d5_.js:668
+    L6 http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    $c http://localhost:3001/assets/index-BdhW_d5_.js:49
+    xV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    HV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    M7 http://localhost:3001/assets/index-BdhW_d5_.js:49
+    KV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    H6 http://localhost:3001/assets/index-BdhW_d5_.js:49
+    FV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    jV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    TV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    MV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    qV http://localhost:3001/assets/index-BdhW_d5_.js:49
+    P http://localhost:3001/assets/index-BdhW_d5_.js:26
+index-BdhW_d5_.js:601:6302
+
+​
+
+"

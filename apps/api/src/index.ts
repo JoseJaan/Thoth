@@ -14,6 +14,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Ensure data directories exist
 fs.mkdirSync(config.pdfsDir, { recursive: true });
 
+// Auto-run migrations on startup
+import { migrate } from "drizzle-orm/better-sqlite3/migrator";
+import { db } from "./db/index.js";
+
+const migrationsFolder = path.resolve(__dirname, "db/migrations");
+if (fs.existsSync(migrationsFolder)) {
+  migrate(db, { migrationsFolder });
+  console.log("Migrations applied successfully.");
+}
+
 const app = Fastify({ logger: true });
 
 await app.register(cors, { origin: true });
@@ -32,7 +42,7 @@ await app.register(fastifyTRPCPlugin, {
 });
 
 // Serve frontend static files in production
-const webDistPath = path.resolve(__dirname, "../../../web/dist");
+const webDistPath = path.resolve(__dirname, "../../web/dist");
 if (fs.existsSync(webDistPath)) {
   await app.register(fastifyStatic, {
     root: webDistPath,

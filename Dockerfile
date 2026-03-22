@@ -23,6 +23,9 @@ COPY apps/web/index.html ./apps/web/
 # Build
 RUN pnpm -r build
 
+# Copy SQL migration files into the compiled dist (tsc doesn't copy .sql files)
+RUN cp -r apps/api/src/db/migrations apps/api/dist/db/migrations
+
 # Stage 2: Runtime
 FROM node:20-alpine
 
@@ -41,15 +44,7 @@ RUN pnpm install --frozen-lockfile --prod
 
 # Copy built artifacts
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
-COPY --from=builder /app/apps/api/src/db/migrations ./apps/api/src/db/migrations
 COPY --from=builder /app/apps/web/dist ./apps/web/dist
-
-# Copy migration runner (needs tsx for runtime)
-COPY apps/api/src/db/migrate.ts ./apps/api/src/db/migrate.ts
-COPY apps/api/src/db/index.ts ./apps/api/src/db/index.ts
-COPY apps/api/src/db/schema.ts ./apps/api/src/db/schema.ts
-COPY apps/api/src/config.ts ./apps/api/src/config.ts
-COPY apps/api/drizzle.config.ts ./apps/api/
 
 # Data volume
 VOLUME /app/data
