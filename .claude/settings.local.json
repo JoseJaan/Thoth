@@ -20,7 +20,9 @@
       "Bash(curl -s http://localhost:5173/)",
       "Bash(curl:*)",
       "Bash(pnpm --filter @thoth/web add react-pdf)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(pnpm --filter @thoth/web add @excalidraw/excalidraw)",
+      "Bash(pnpm --filter @thoth/web add @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities)"
     ]
   }
 }

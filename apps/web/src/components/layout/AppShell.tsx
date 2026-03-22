@@ -3,8 +3,11 @@ import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import NotesPage from "../../pages/NotesPage";
 import DocumentsPage from "../../pages/DocumentsPage";
+import DiagramsPage from "../../pages/DiagramsPage";
+import TasksPage from "../../pages/TasksPage";
 import DashboardPage from "../../pages/DashboardPage";
 import QuickCapture from "../QuickCapture";
+import PomodoroTimer from "../PomodoroTimer";
 
 const pageConfig: Record<string, { title: string; color: string }> = {
   dashboard: { title: "Inicio", color: "var(--color-primary)" },
@@ -19,6 +22,7 @@ export default function AppShell() {
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [quickCaptureOpen, setQuickCaptureOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [pomodoroOpen, setPomodoroOpen] = useState(false);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.ctrlKey && e.key === "n") {
@@ -45,9 +49,9 @@ export default function AppShell() {
       case "documents":
         return <DocumentsPage />;
       case "diagrams":
-        return <PlaceholderPage name="Diagramas" color="var(--color-diagrams)" />;
+        return <DiagramsPage />;
       case "tasks":
-        return <PlaceholderPage name="Tarefas" color="var(--color-tasks)" />;
+        return <TasksPage />;
       default:
         return <DashboardPage onNavigate={setCurrentPage} />;
     }
@@ -67,6 +71,8 @@ export default function AppShell() {
           title={config.title}
           color={config.color}
           onQuickCapture={() => setQuickCaptureOpen(true)}
+          onTogglePomodoro={() => setPomodoroOpen(!pomodoroOpen)}
+          pomodoroOpen={pomodoroOpen}
         />
         <div className="flex-1 overflow-auto">{renderPage()}</div>
       </main>
@@ -81,23 +87,8 @@ export default function AppShell() {
           }}
         />
       )}
-    </div>
-  );
-}
 
-function PlaceholderPage({ name, color }: { name: string; color: string }) {
-  return (
-    <div className="flex items-center justify-center h-full">
-      <div className="text-center space-y-3">
-        <div
-          className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center text-white text-2xl"
-          style={{ backgroundColor: color }}
-        >
-          {name[0]}
-        </div>
-        <h3 className="text-lg font-semibold text-slate-700">{name}</h3>
-        <p className="text-sm text-slate-400">Em breve...</p>
-      </div>
+      <PomodoroTimer isOpen={pomodoroOpen} onClose={() => setPomodoroOpen(false)} />
     </div>
   );
 }

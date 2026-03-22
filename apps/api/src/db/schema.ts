@@ -72,6 +72,15 @@ export const tasks = sqliteTable("tasks", {
   updatedAt: text("updated_at").notNull(),
 });
 
+// ===== Pomodoro =====
+export const pomodoroSessions = sqliteTable("pomodoro_sessions", {
+  id: text("id").primaryKey(),
+  taskId: text("task_id").references(() => tasks.id, { onDelete: "set null" }),
+  duration: integer("duration").notNull(), // in seconds
+  startedAt: text("started_at").notNull(),
+  completedAt: text("completed_at"),
+});
+
 // ===== Tags =====
 export const tags = sqliteTable("tags", {
   id: text("id").primaryKey(),
