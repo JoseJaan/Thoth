@@ -18,7 +18,9 @@
       "Bash(pnpm --filter @thoth/web add @tiptap/react @tiptap/starter-kit @tiptap/pm @tiptap/extension-placeholder @tiptap/extension-task-list @tiptap/extension-task-item @tiptap/extension-code-block-lowlight @tiptap/extension-table @tiptap/extension-table-row @tiptap/extension-table-cell @tiptap/extension-table-header @tiptap/extension-link @tiptap/extension-image @tiptap/extension-typography @tiptap/extension-underline @tiptap/extension-highlight @tiptap/extension-text-align lowlight)",
       "Bash(pnpm dev:*)",
       "Bash(curl -s http://localhost:5173/)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(pnpm --filter @thoth/web add react-pdf)",
+      "Bash(ls:*)"
     ]
   }
 }

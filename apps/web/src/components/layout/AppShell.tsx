@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import NotesPage from "../../pages/NotesPage";
+import DocumentsPage from "../../pages/DocumentsPage";
 import DashboardPage from "../../pages/DashboardPage";
 import QuickCapture from "../QuickCapture";
 
@@ -42,7 +43,7 @@ export default function AppShell() {
       case "notes":
         return <NotesPage selectedNoteId={selectedNoteId} onSelectNote={setSelectedNoteId} />;
       case "documents":
-        return <PlaceholderPage name="Documentos" color="var(--color-documents)" />;
+        return <DocumentsPage />;
       case "diagrams":
         return <PlaceholderPage name="Diagramas" color="var(--color-diagrams)" />;
       case "tasks":
