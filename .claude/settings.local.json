@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm install:*)",
+      "Bash(npm --version)",
+      "Bash(npm install:*)",
+      "Bash(pnpm approve-builds:*)",
+      "Bash(pnpm --filter @thoth/web add clsx tailwind-merge)",
+      "Bash(pnpm db:generate)",
+      "Bash(pnpm db:migrate)",
+      "Bash(pnpm --filter @thoth/api dev)",
+      "Bash(curl -s http://localhost:3001/trpc/health)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill:*)",
+      "Bash(ls C:/Users/josea/Documents/ComputerScience/ProjetosPessoais/Thoth/node_modules/.pnpm/@trpc+server@*/node_modules/@trpc/server/adapters/)",
+      "Bash(pnpm --filter @thoth/web dev)"
+    ]
+  }
+}
