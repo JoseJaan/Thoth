@@ -141,7 +141,8 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
       </div>
 
       {/* Excalidraw canvas */}
-      <div className="flex-1 relative">
+      <div className="flex-1 relative" style={{ minHeight: 0 }}>
+        <div style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}>
         <Excalidraw
           ref={excalidrawRef}
           initialData={{
@@ -154,6 +155,7 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
           onChange={handleChange}
           langCode="pt-BR"
         />
+        </div>
       </div>
     </div>
   );

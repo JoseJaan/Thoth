@@ -64,6 +64,8 @@ export default function NoteEditor({ note }: NoteEditorProps) {
     extensions: [
       StarterKit.configure({
         codeBlock: false,
+        link: false,
+        underline: false,
       }),
       Placeholder.configure({
         placeholder: "Comece a escrever...",

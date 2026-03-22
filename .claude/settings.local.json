@@ -29,7 +29,9 @@
       "Bash(for pkg:*)",
       "Bash(do echo:*)",
       "Read(//c/Users/josea/Documents/ComputerScience/ProjetosPessoais/Thoth/apps/web/node_modules/@tiptap/$pkg/dist/**)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(lsof -ti:3001)",
+      "Bash(xargs kill:*)"
     ]
   }
 }
