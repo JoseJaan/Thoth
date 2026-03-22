@@ -13,7 +13,12 @@
       "Bash(netstat -ano)",
       "Bash(taskkill:*)",
       "Bash(ls C:/Users/josea/Documents/ComputerScience/ProjetosPessoais/Thoth/node_modules/.pnpm/@trpc+server@*/node_modules/@trpc/server/adapters/)",
-      "Bash(pnpm --filter @thoth/web dev)"
+      "Bash(pnpm --filter @thoth/web dev)",
+      "Bash(pnpm --filter @thoth/web add lucide-react)",
+      "Bash(pnpm --filter @thoth/web add @tiptap/react @tiptap/starter-kit @tiptap/pm @tiptap/extension-placeholder @tiptap/extension-task-list @tiptap/extension-task-item @tiptap/extension-code-block-lowlight @tiptap/extension-table @tiptap/extension-table-row @tiptap/extension-table-cell @tiptap/extension-table-header @tiptap/extension-link @tiptap/extension-image @tiptap/extension-typography @tiptap/extension-underline @tiptap/extension-highlight @tiptap/extension-text-align lowlight)",
+      "Bash(pnpm dev:*)",
+      "Bash(curl -s http://localhost:5173/)",
+      "Bash(curl:*)"
     ]
   }
 }
