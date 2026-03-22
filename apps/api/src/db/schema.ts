@@ -81,6 +81,30 @@ export const pomodoroSessions = sqliteTable("pomodoro_sessions", {
   completedAt: text("completed_at"),
 });
 
+// ===== Flashcards =====
+export const flashcards = sqliteTable("flashcards", {
+  id: text("id").primaryKey(),
+  front: text("front").notNull(),
+  back: text("back").notNull(),
+  sourceId: text("source_id"),
+  sourceType: text("source_type"), // 'note' | 'document'
+  nextReview: text("next_review").notNull(),
+  interval: integer("interval").notNull().default(1), // days
+  easeFactor: text("ease_factor").notNull().default("2.5"),
+  repetitions: integer("repetitions").notNull().default(0),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+});
+
+export const flashcardReviews = sqliteTable("flashcard_reviews", {
+  id: text("id").primaryKey(),
+  flashcardId: text("flashcard_id")
+    .notNull()
+    .references(() => flashcards.id, { onDelete: "cascade" }),
+  rating: integer("rating").notNull(), // 0-5
+  reviewedAt: text("reviewed_at").notNull(),
+});
+
 // ===== Tags =====
 export const tags = sqliteTable("tags", {
   id: text("id").primaryKey(),

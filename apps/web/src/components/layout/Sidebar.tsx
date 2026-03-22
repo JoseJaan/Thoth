@@ -5,6 +5,7 @@ import {
   BookOpen,
   PenTool,
   CheckSquare,
+  Brain,
   Home,
   Search,
   Plus,
@@ -32,6 +33,7 @@ const navItems: NavItem[] = [
   { id: "documents", label: "Documentos", icon: <BookOpen size={18} />, color: "var(--color-documents)", path: "documents" },
   { id: "diagrams", label: "Diagramas", icon: <PenTool size={18} />, color: "var(--color-diagrams)", path: "diagrams" },
   { id: "tasks", label: "Tarefas", icon: <CheckSquare size={18} />, color: "var(--color-tasks)", path: "tasks" },
+  { id: "flashcards", label: "Flashcards", icon: <Brain size={18} />, color: "var(--color-flashcards)", path: "flashcards" },
 ];
 
 interface NoteTreeItemProps {

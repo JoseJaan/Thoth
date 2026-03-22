@@ -22,7 +22,10 @@
       "Bash(pnpm --filter @thoth/web add react-pdf)",
       "Bash(ls:*)",
       "Bash(pnpm --filter @thoth/web add @excalidraw/excalidraw)",
-      "Bash(pnpm --filter @thoth/web add @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities)"
+      "Bash(pnpm --filter @thoth/web add @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities)",
+      "Bash(npx tsc:*)",
+      "Bash(npx vite:*)",
+      "Bash(tasklist //FI \"IMAGENAME eq node.exe\" //FO LIST)"
     ]
   }
 }

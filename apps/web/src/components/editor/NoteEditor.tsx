@@ -19,6 +19,7 @@ import { common, createLowlight } from "lowlight";
 import { trpc } from "../../trpc";
 import { useDebouncedCallback } from "../../hooks/useDebounce";
 import EditorToolbar from "./EditorToolbar";
+import TagManager from "../TagManager";
 
 const lowlight = createLowlight(common);
 
@@ -110,6 +111,9 @@ export default function NoteEditor({ note }: NoteEditorProps) {
           placeholder="Sem titulo"
           className="w-full text-3xl font-bold text-slate-800 outline-none border-none bg-transparent placeholder:text-slate-300"
         />
+        <div className="mt-2">
+          <TagManager entityId={note.id} entityType="note" />
+        </div>
       </div>
 
       {/* Toolbar */}

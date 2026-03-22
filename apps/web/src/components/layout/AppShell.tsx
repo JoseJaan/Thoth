@@ -5,9 +5,11 @@ import NotesPage from "../../pages/NotesPage";
 import DocumentsPage from "../../pages/DocumentsPage";
 import DiagramsPage from "../../pages/DiagramsPage";
 import TasksPage from "../../pages/TasksPage";
+import FlashcardsPage from "../../pages/FlashcardsPage";
 import DashboardPage from "../../pages/DashboardPage";
 import QuickCapture from "../QuickCapture";
 import PomodoroTimer from "../PomodoroTimer";
+import GlobalSearch from "../search/GlobalSearch";
 
 const pageConfig: Record<string, { title: string; color: string }> = {
   dashboard: { title: "Inicio", color: "var(--color-primary)" },
@@ -15,6 +17,7 @@ const pageConfig: Record<string, { title: string; color: string }> = {
   documents: { title: "Documentos", color: "var(--color-documents)" },
   diagrams: { title: "Diagramas", color: "var(--color-diagrams)" },
   tasks: { title: "Tarefas", color: "var(--color-tasks)" },
+  flashcards: { title: "Flashcards", color: "var(--color-flashcards)" },
 };
 
 export default function AppShell() {
@@ -40,6 +43,24 @@ export default function AppShell() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
+  const handleSearchResult = (type: string, id: string) => {
+    switch (type) {
+      case "note":
+        setSelectedNoteId(id);
+        setCurrentPage("notes");
+        break;
+      case "document":
+        setCurrentPage("documents");
+        break;
+      case "diagram":
+        setCurrentPage("diagrams");
+        break;
+      case "task":
+        setCurrentPage("tasks");
+        break;
+    }
+  };
+
   const config = pageConfig[currentPage] || pageConfig.dashboard;
 
   const renderPage = () => {
@@ -52,6 +73,8 @@ export default function AppShell() {
         return <DiagramsPage />;
       case "tasks":
         return <TasksPage />;
+      case "flashcards":
+        return <FlashcardsPage />;
       default:
         return <DashboardPage onNavigate={setCurrentPage} />;
     }
@@ -87,6 +110,12 @@ export default function AppShell() {
           }}
         />
       )}
+
+      <GlobalSearch
+        isOpen={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        onSelectResult={handleSearchResult}
+      />
 
       <PomodoroTimer isOpen={pomodoroOpen} onClose={() => setPomodoroOpen(false)} />
     </div>
