@@ -1,10 +1,40 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, Component, type ReactNode } from "react";
 import { ArrowLeft, Save, Edit3 } from "lucide-react";
 import { trpc } from "../../trpc";
 import { useDebouncedCallback } from "../../hooks/useDebounce";
 
 // Lazy import Excalidraw to avoid SSR issues
 import { Excalidraw, exportToBlob } from "@excalidraw/excalidraw";
+
+// ErrorBoundary to catch Excalidraw canvas errors
+class ExcalidrawErrorBoundary extends Component<
+  { children: ReactNode; onRetry: () => void },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex flex-col items-center justify-center h-full gap-3 text-slate-500">
+          <p className="text-sm">Erro ao renderizar o diagrama.</p>
+          <button
+            onClick={() => {
+              this.setState({ hasError: false });
+              this.props.onRetry();
+            }}
+            className="px-3 py-1.5 text-xs bg-purple-500 text-white rounded-lg hover:bg-purple-600"
+          >
+            Tentar novamente
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 interface DiagramEditorProps {
   diagramId: string;
@@ -14,14 +44,23 @@ interface DiagramEditorProps {
 export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps) {
   const [editingTitle, setEditingTitle] = useState(false);
   const [title, setTitle] = useState("");
-  const [ready, setReady] = useState(false);
+  const [containerSize, setContainerSize] = useState<{ width: number; height: number } | null>(null);
+  const [renderKey, setRenderKey] = useState(0);
   const excalidrawRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Defer Excalidraw render until container has dimensions
+  // Use ResizeObserver to get actual container dimensions before rendering Excalidraw
   useEffect(() => {
-    const timer = requestAnimationFrame(() => setReady(true));
-    return () => cancelAnimationFrame(timer);
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver((entries) => {
+      const { width, height } = entries[0].contentRect;
+      if (width > 0 && height > 0) {
+        setContainerSize({ width, height });
+      }
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   const diagram = trpc.diagrams.getById.useQuery({ id: diagramId });
@@ -48,7 +87,7 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
   const handleSaveThumbnail = async () => {
     if (!excalidrawRef.current) return;
     try {
-      const elements = excalidrawRef.current.getSceneElements();
+      const elements = excalidrawRef.current.getSceneElements().filter((el: any) => !el.isDeleted);
       if (elements.length === 0) return;
 
       const blob = await exportToBlob({
@@ -56,6 +95,7 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
         mimeType: "image/png",
         getDimensions: () => ({ width: 320, height: 200, scale: 1 }),
         files: excalidrawRef.current.getFiles(),
+        maxWidthOrHeight: 320,
       });
 
       const reader = new FileReader();
@@ -150,21 +190,24 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
 
       {/* Excalidraw canvas */}
       <div ref={containerRef} className="flex-1 relative" style={{ minHeight: 0 }}>
-        {ready && (
-          <div style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}>
-            <Excalidraw
-              ref={excalidrawRef}
-              initialData={{
-                elements: initialElements,
-                appState: {
-                  ...initialAppState,
-                  theme: "light",
-                },
-              }}
-              onChange={handleChange}
-              langCode="pt-BR"
-            />
-          </div>
+        {containerSize && (
+          <ExcalidrawErrorBoundary onRetry={() => setRenderKey((k) => k + 1)}>
+            <div style={{ width: containerSize.width, height: containerSize.height, position: "absolute", top: 0, left: 0 }}>
+              <Excalidraw
+                key={renderKey}
+                ref={excalidrawRef}
+                initialData={{
+                  elements: initialElements,
+                  appState: {
+                    ...initialAppState,
+                    theme: "light",
+                  },
+                }}
+                onChange={handleChange}
+                langCode="pt-BR"
+              />
+            </div>
+          </ExcalidrawErrorBoundary>
         )}
       </div>
     </div>

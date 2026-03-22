@@ -10,6 +10,9 @@ import {
   Trash2,
   BookOpen,
   FileText,
+  List,
+  ChevronRight,
+  ChevronDown,
 } from "lucide-react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
@@ -17,6 +20,12 @@ import { Placeholder } from "@tiptap/extension-placeholder";
 import { trpc } from "../../trpc";
 import DocumentNoteEditor from "./DocumentNoteEditor";
 import { useDebouncedCallback } from "../../hooks/useDebounce";
+
+interface OutlineItem {
+  title: string;
+  pageNumber: number | null;
+  items: OutlineItem[];
+}
 
 // Configure PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -37,6 +46,9 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [scale, setScale] = useState(1.2);
+  const [outline, setOutline] = useState<OutlineItem[]>([]);
+  const [showOutline, setShowOutline] = useState(false);
+  const pdfDocRef = useRef<any>(null);
   const pageRefs = useRef<Map<number, HTMLDivElement>>(new Map());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -81,6 +93,60 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
       pageRefs.current.set(pageNum, el);
     } else {
       pageRefs.current.delete(pageNum);
+    }
+  }, []);
+
+  // Extract PDF outline/TOC
+  const extractOutline = useCallback(async (pdf: any) => {
+    pdfDocRef.current = pdf;
+    try {
+      const rawOutline = await pdf.getOutline();
+      if (!rawOutline || rawOutline.length === 0) {
+        setOutline([]);
+        return;
+      }
+
+      const resolveDestination = async (dest: any): Promise<number | null> => {
+        try {
+          let ref: any;
+          if (typeof dest === "string") {
+            const resolved = await pdf.getDestination(dest);
+            if (!resolved) return null;
+            ref = resolved[0];
+          } else if (Array.isArray(dest)) {
+            ref = dest[0];
+          } else {
+            return null;
+          }
+          const pageIndex = await pdf.getPageIndex(ref);
+          return pageIndex + 1;
+        } catch {
+          return null;
+        }
+      };
+
+      const processItems = async (items: any[]): Promise<OutlineItem[]> => {
+        const result: OutlineItem[] = [];
+        for (const item of items) {
+          const pageNumber = item.dest ? await resolveDestination(item.dest) : null;
+          const children = item.items?.length > 0 ? await processItems(item.items) : [];
+          result.push({ title: item.title, pageNumber, items: children });
+        }
+        return result;
+      };
+
+      const processed = await processItems(rawOutline);
+      setOutline(processed);
+      if (processed.length > 0) setShowOutline(true);
+    } catch (err) {
+      console.error("Error extracting PDF outline:", err);
+    }
+  }, []);
+
+  const scrollToPage = useCallback((pageNum: number) => {
+    const el = pageRefs.current.get(pageNum);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, []);
 
@@ -161,6 +227,15 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
         <div className="flex-1 flex flex-col bg-slate-100">
           {/* Page indicator + Zoom controls */}
           <div className="flex items-center justify-center gap-4 py-2 bg-white border-b border-slate-100">
+            {outline.length > 0 && (
+              <button
+                onClick={() => setShowOutline(!showOutline)}
+                className={`p-1 rounded transition-colors ${showOutline ? "bg-blue-100 text-blue-600" : "hover:bg-slate-100 text-slate-500"}`}
+                title="Indice"
+              >
+                <List size={16} />
+              </button>
+            )}
             <span className="text-sm text-slate-600">
               {currentPage} / {numPages}
             </span>
@@ -182,11 +257,37 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
             </button>
           </div>
 
+          {/* PDF content area with optional outline */}
+          <div className="flex-1 flex overflow-hidden">
+          {/* Outline panel */}
+          {showOutline && outline.length > 0 && (
+            <div className="w-64 border-r border-slate-200 bg-white overflow-auto shrink-0">
+              <div className="flex items-center gap-2 px-3 py-2 border-b border-slate-100 bg-slate-50">
+                <List size={14} className="text-blue-500" />
+                <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Indice</span>
+              </div>
+              <div className="py-1">
+                {outline.map((item, i) => (
+                  <OutlineItemView
+                    key={i}
+                    item={item}
+                    level={0}
+                    currentPage={currentPage}
+                    onNavigate={scrollToPage}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* PDF rendering - continuous scroll */}
           <div ref={scrollContainerRef} className="flex-1 overflow-auto">
             <Document
               file={pdfUrl}
-              onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+              onLoadSuccess={(pdf) => {
+                setNumPages(pdf.numPages);
+                extractOutline(pdf);
+              }}
               loading={
                 <div className="flex items-center justify-center py-20">
                   <span className="text-slate-400">Carregando PDF...</span>
@@ -218,6 +319,7 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
                 ))}
               </div>
             </Document>
+          </div>
           </div>
         </div>
 
@@ -284,6 +386,64 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function OutlineItemView({
+  item,
+  level,
+  currentPage,
+  onNavigate,
+}: {
+  item: OutlineItem;
+  level: number;
+  currentPage: number;
+  onNavigate: (page: number) => void;
+}) {
+  const [expanded, setExpanded] = useState(level < 2);
+  const hasChildren = item.items.length > 0;
+  const isActive = item.pageNumber === currentPage;
+
+  return (
+    <div>
+      <button
+        className={`w-full flex items-center gap-1 px-2 py-1.5 text-left text-xs transition-colors hover:bg-blue-50 ${
+          isActive ? "bg-blue-50 text-blue-700 font-medium" : "text-slate-600"
+        }`}
+        style={{ paddingLeft: `${8 + level * 12}px` }}
+        onClick={() => {
+          if (hasChildren) setExpanded(!expanded);
+          if (item.pageNumber) onNavigate(item.pageNumber);
+        }}
+      >
+        {hasChildren ? (
+          expanded ? (
+            <ChevronDown size={12} className="shrink-0 text-slate-400" />
+          ) : (
+            <ChevronRight size={12} className="shrink-0 text-slate-400" />
+          )
+        ) : (
+          <span className="w-3 shrink-0" />
+        )}
+        <span className="truncate flex-1">{item.title}</span>
+        {item.pageNumber && (
+          <span className="text-[10px] text-slate-400 shrink-0">{item.pageNumber}</span>
+        )}
+      </button>
+      {hasChildren && expanded && (
+        <div>
+          {item.items.map((child, i) => (
+            <OutlineItemView
+              key={i}
+              item={child}
+              level={level + 1}
+              currentPage={currentPage}
+              onNavigate={onNavigate}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

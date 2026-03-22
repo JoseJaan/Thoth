@@ -142,9 +142,18 @@ export default function Sidebar({
   onOpenSearch,
 }: SidebarProps) {
   const rootNotes = trpc.notes.list.useQuery({});
-  const createNote = trpc.notes.create.useMutation();
-  const deleteNote = trpc.notes.delete.useMutation();
   const utils = trpc.useUtils();
+  const createNote = trpc.notes.create.useMutation({
+    onSuccess: () => {
+      utils.notes.list.invalidate();
+    },
+  });
+  const deleteNote = trpc.notes.delete.useMutation({
+    onSuccess: () => {
+      utils.notes.list.invalidate();
+      utils.notes.listAll.invalidate();
+    },
+  });
 
   const handleCreateNote = async (isFolder: boolean) => {
     const note = await createNote.mutateAsync({
@@ -154,7 +163,6 @@ export default function Sidebar({
       content: "{}",
       icon: null,
     });
-    utils.notes.list.invalidate();
     if (!isFolder) {
       onSelectNote(note.id);
       onPageChange("notes");
@@ -163,7 +171,6 @@ export default function Sidebar({
 
   const handleDelete = async (id: string) => {
     await deleteNote.mutateAsync({ id });
-    utils.notes.list.invalidate();
     if (selectedNoteId === id) {
       onSelectNote("");
     }

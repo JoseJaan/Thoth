@@ -32,7 +32,8 @@
       "Bash(done)",
       "Bash(lsof -ti:3001)",
       "Bash(xargs kill:*)",
-      "Bash(pnpm -r build)"
+      "Bash(pnpm -r build)",
+      "Bash(grep -E \"\\\\.\\(ts|tsx\\)$\")"
     ]
   }
 }
