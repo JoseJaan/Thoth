@@ -37,8 +37,8 @@ graph TB
     DOCS_P --> DOCNOTE["DocumentNoteEditor"]
     DIAG_P --> DIAGEDIT["DiagramEditor<br/>(Excalidraw)"]
 
-    MODALS --> QCAPTURE["QuickCapture<br/>Ctrl+N"]
-    MODALS --> GSEARCH["GlobalSearch<br/>Ctrl+K"]
+    MODALS --> QCAPTURE["QuickCapture<br/>Ctrl+Shift+N"]
+    MODALS --> GSEARCH["GlobalSearch<br/>Ctrl+Shift+K"]
     MODALS --> POMODORO["PomodoroTimer"]
     MODALS --> TAGMGR["TagManager"]
 
@@ -154,10 +154,10 @@ src/
 │   ├── diagrams/
 │   │   └── DiagramEditor.tsx     # Wrapper do Excalidraw
 │   ├── search/
-│   │   └── GlobalSearch.tsx      # Modal de busca global (Ctrl+K)
+│   │   └── GlobalSearch.tsx      # Modal de busca global (Ctrl+Shift+K)
 │   ├── TagManager.tsx            # Gerenciamento de tags em entidades
 │   ├── PomodoroTimer.tsx         # Timer Pomodoro (25min padrao)
-│   └── QuickCapture.tsx          # Modal de captura rapida (Ctrl+N)
+│   └── QuickCapture.tsx          # Modal de captura rapida (Ctrl+Shift+N)
 ├── pages/
 │   ├── DashboardPage.tsx         # Pagina inicial / visao geral
 │   ├── NotesPage.tsx             # Notas com editor

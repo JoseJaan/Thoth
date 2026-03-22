@@ -185,7 +185,7 @@ export default function Sidebar({
       >
         <Search size={14} />
         <span className="flex-1 text-left">Buscar...</span>
-        <kbd className="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded font-mono">Ctrl+K</kbd>
+        <kbd className="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded font-mono">Ctrl+Shift+K</kbd>
       </button>
 
       {/* Navigation */}

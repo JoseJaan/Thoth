@@ -28,11 +28,11 @@ export default function AppShell() {
   const [pomodoroOpen, setPomodoroOpen] = useState(false);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.ctrlKey && e.key === "n") {
+    if (e.ctrlKey && e.shiftKey && e.key === "N") {
       e.preventDefault();
       setQuickCaptureOpen(true);
     }
-    if (e.ctrlKey && e.key === "k") {
+    if (e.ctrlKey && e.shiftKey && e.key === "K") {
       e.preventDefault();
       setSearchOpen(true);
     }

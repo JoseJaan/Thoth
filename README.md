@@ -13,9 +13,9 @@
 | **Pomodoro** | Timer integrado (25min) vinculavel a tarefas para controle de foco |
 | **Flashcards SM-2** | Sistema de repeticao espacada com algoritmo SM-2 para memorizacao eficiente |
 | **Tags** | Sistema polimorfico de tags com cores para categorizar notas, documentos, diagramas e tarefas |
-| **Busca Global** | Pesquisa unificada em notas, documentos, diagramas e tarefas (Ctrl+K) |
+| **Busca Global** | Pesquisa unificada em notas, documentos, diagramas e tarefas (Ctrl+Shift+K) |
 | **Links** | Conexoes bidirecionais entre qualquer entidade do sistema |
-| **Quick Capture** | Criacao rapida de notas com Ctrl+N |
+| **Quick Capture** | Criacao rapida de notas com Ctrl+Shift+N |
 
 ## Arquitetura
 

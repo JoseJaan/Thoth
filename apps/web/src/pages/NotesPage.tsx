@@ -23,7 +23,7 @@ export default function NotesPage({ selectedNoteId, onSelectNote }: NotesPagePro
           <h3 className="text-lg font-semibold text-slate-700">Nenhuma nota selecionada</h3>
           <p className="text-sm text-slate-400">
             Selecione uma nota na sidebar ou crie uma nova com{" "}
-            <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-[10px] font-mono">Ctrl+N</kbd>
+            <kbd className="px-1.5 py-0.5 bg-slate-100 rounded text-[10px] font-mono">Ctrl+Shift+N</kbd>
           </p>
         </div>
       </div>

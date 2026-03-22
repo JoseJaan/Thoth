@@ -45,7 +45,7 @@ export default function TopBar({ title, subtitle, color, onQuickCapture, onToggl
         <button
           onClick={onQuickCapture}
           className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-[var(--color-primary)] text-white rounded-lg hover:opacity-90 transition-opacity shadow-sm"
-          title="Captura rapida (Ctrl+N)"
+          title="Captura rapida (Ctrl+Shift+N)"
         >
           <Plus size={14} />
           Novo

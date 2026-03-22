@@ -377,11 +377,11 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
             <p className="text-xs text-indigo-500">
               Use{" "}
               <kbd className="px-1.5 py-0.5 bg-white rounded text-[10px] font-mono shadow-sm">
-                Ctrl+N
+                Ctrl+Shift+N
               </kbd>{" "}
               para captura rapida e{" "}
               <kbd className="px-1.5 py-0.5 bg-white rounded text-[10px] font-mono shadow-sm">
-                Ctrl+K
+                Ctrl+Shift+K
               </kbd>{" "}
               para buscar.
             </p>
