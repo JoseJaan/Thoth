@@ -35,7 +35,11 @@
       "Bash(pnpm -r build)",
       "Bash(grep -E \"\\\\.\\(ts|tsx\\)$\")",
       "Bash(find C:/Users/josea/Documents/ComputerScience/ProjetosPessoais/Thoth/node_modules/.pnpm -path *excalidraw* -name *.css)",
-      "Bash(find C:/Users/josea/Documents/ComputerScience/ProjetosPessoais/Thoth/node_modules/.pnpm -path *excalidraw*utils* -name *.d.ts)"
+      "Bash(find C:/Users/josea/Documents/ComputerScience/ProjetosPessoais/Thoth/node_modules/.pnpm -path *excalidraw*utils* -name *.d.ts)",
+      "Bash(node -e \"const e = require\\(''@excalidraw/excalidraw''\\); console.log\\(''exports:'', Object.keys\\(e\\).filter\\(k => k.includes\\(''export''\\) || k.includes\\(''Export''\\)\\).join\\('', ''\\)\\)\")",
+      "Bash(find C:/Users/josea/Documents/ComputerScience/ProjetosPessoais/Thoth/node_modules/.pnpm/@excalidraw+excalidraw@0.18* -name *.d.ts -path */dist/*)",
+      "Bash(grep -r DiagramEditor /c/Users/josea/Documents/ComputerScience/ProjetosPessoais/Thoth/apps/web/src --include=*.tsx --include=*.ts)",
+      "Bash(xargs grep:*)"
     ]
   }
 }

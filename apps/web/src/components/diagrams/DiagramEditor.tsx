@@ -46,8 +46,11 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
   const [title, setTitle] = useState("");
   const [ready, setReady] = useState(false);
   const [renderKey, setRenderKey] = useState(0);
-  const excalidrawRef = useRef<any>(null);
+  const [excalidrawAPI, setExcalidrawAPI] = useState<any>(null);
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const utils = trpc.useUtils();
 
   // Wait for container to have real dimensions before rendering Excalidraw
   useEffect(() => {
@@ -65,6 +68,13 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
 
   const diagram = trpc.diagrams.getById.useQuery({ id: diagramId });
   const updateDiagram = trpc.diagrams.update.useMutation();
+
+  // Only mark data as loaded once query has fresh data (not stale cache)
+  useEffect(() => {
+    if (!initialDataLoaded && diagram.data && !diagram.isFetching) {
+      setInitialDataLoaded(true);
+    }
+  }, [initialDataLoaded, diagram.data, diagram.isFetching]);
 
   // Sync title from fetched data (via effect, not during render)
   useEffect(() => {
@@ -96,7 +106,7 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
   );
 
   const handleSaveThumbnail = async () => {
-    const api = excalidrawRef.current;
+    const api = excalidrawAPI;
     if (!api) return;
     try {
       const allElements = api.getSceneElements();
@@ -139,28 +149,51 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
   };
 
   const handleBack = async () => {
-    await handleSaveThumbnail();
+    // Cancel pending debounced save — we'll save directly from the API
+    debouncedSave.cancel();
+
+    // Save current scene data directly and await completion
+    if (excalidrawAPI) {
+      try {
+        const elements = excalidrawAPI.getSceneElements();
+        const appState = excalidrawAPI.getAppState();
+        const files = excalidrawAPI.getFiles();
+
+        if (elements.length > 0) {
+          const data = JSON.stringify({
+            elements,
+            appState: { viewBackgroundColor: appState.viewBackgroundColor },
+            files: files ?? {},
+          });
+          await updateDiagram.mutateAsync({ id: diagramId, data });
+        }
+      } catch (err) {
+        console.error("Error saving diagram data:", err);
+      }
+
+      await handleSaveThumbnail();
+    }
+
+    // Invalidate cache so next open gets fresh data from the server
+    await utils.diagrams.getById.invalidate();
+
     onBack();
   };
-
-  if (!diagram.data) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <span className="text-slate-400">Carregando...</span>
-      </div>
-    );
-  }
 
   // Parse initial data
   let initialElements: any[] = [];
   let initialAppState: any = undefined;
   let initialFiles: any = undefined;
-  try {
-    const parsed = JSON.parse(diagram.data.data);
-    if (parsed.elements) initialElements = parsed.elements;
-    if (parsed.appState) initialAppState = parsed.appState;
-    if (parsed.files) initialFiles = parsed.files;
-  } catch {}
+  if (diagram.data) {
+    try {
+      const parsed = JSON.parse(diagram.data.data);
+      if (parsed.elements) initialElements = parsed.elements;
+      if (parsed.appState) initialAppState = parsed.appState;
+      if (parsed.files) initialFiles = parsed.files;
+    } catch {}
+  }
+
+  const canRenderExcalidraw = ready && initialDataLoaded;
 
   return (
     <div className="h-full flex flex-col">
@@ -188,7 +221,7 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
             onClick={() => setEditingTitle(true)}
             className="flex items-center gap-1.5 text-sm font-medium text-slate-800 hover:text-purple-600 transition-colors"
           >
-            {title || diagram.data.title}
+            {title || diagram.data?.title || "..."}
             <Edit3 size={12} className="text-slate-400" />
           </button>
         )}
@@ -208,14 +241,14 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
         </button>
       </div>
 
-      {/* Excalidraw canvas */}
+      {/* Excalidraw canvas — container always renders so ResizeObserver works */}
       <div ref={containerRef} className="flex-1 relative" style={{ minHeight: 0 }}>
-        {ready && (
+        {canRenderExcalidraw ? (
           <ExcalidrawErrorBoundary onRetry={() => setRenderKey((k) => k + 1)}>
             <div style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}>
               <Excalidraw
                 key={renderKey}
-                ref={excalidrawRef}
+                excalidrawAPI={(api: any) => setExcalidrawAPI(api)}
                 initialData={{
                   elements: initialElements,
                   appState: {
@@ -229,6 +262,10 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
               />
             </div>
           </ExcalidrawErrorBoundary>
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <span className="text-slate-400">Carregando...</span>
+          </div>
         )}
       </div>
     </div>

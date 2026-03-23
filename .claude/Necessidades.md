@@ -1,1 +1,3 @@
 - A lista de documentos não atualiza automaticamente ao adicionar um novo arquivo à pasta rastreada
+- No menu de tarefas, após já ter selecionado uma tarefa, selecionar outra tarefa não altera o nome da tarefa seleciona no menu esquerdo
+- O nome "Thoth" no canto superior esquerdo deve ser um atalho para ir ao menu
