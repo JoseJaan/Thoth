@@ -312,6 +312,7 @@ export default function TasksPage() {
       {/* Task detail panel */}
       {selectedTask && (
         <TaskDetailPanel
+          key={selectedTask.id}
           task={selectedTask}
           onClose={() => setSelectedTaskId(null)}
         />

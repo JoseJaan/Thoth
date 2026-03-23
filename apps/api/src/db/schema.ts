@@ -19,6 +19,7 @@ export const documentFolders = sqliteTable("document_folders", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   parentId: text("parent_id").references((): any => documentFolders.id, { onDelete: "set null" }),
+  sourcePath: text("source_path"),
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: text("created_at").notNull(),
 });

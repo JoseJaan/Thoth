@@ -39,7 +39,9 @@
       "Bash(node -e \"const e = require\\(''@excalidraw/excalidraw''\\); console.log\\(''exports:'', Object.keys\\(e\\).filter\\(k => k.includes\\(''export''\\) || k.includes\\(''Export''\\)\\).join\\('', ''\\)\\)\")",
       "Bash(find C:/Users/josea/Documents/ComputerScience/ProjetosPessoais/Thoth/node_modules/.pnpm/@excalidraw+excalidraw@0.18* -name *.d.ts -path */dist/*)",
       "Bash(grep -r DiagramEditor /c/Users/josea/Documents/ComputerScience/ProjetosPessoais/Thoth/apps/web/src --include=*.tsx --include=*.ts)",
-      "Bash(xargs grep:*)"
+      "Bash(xargs grep:*)",
+      "Bash(find /c/Users/josea/Documents/ComputerScience/ProjetosPessoais/Thoth -type f \\\\\\(-name *.ts -o -name *.tsx \\\\\\) -path */server/*)",
+      "Bash(grep -r \"selectedTask\\\\|selected.*task\\\\|task.*menu\" /c/Users/josea/Documents/ComputerScience/ProjetosPessoais/Thoth/apps/web/src --include=*.tsx --include=*.ts)"
     ]
   }
 }

@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   BookOpen,
   FolderPlus,
   Upload,
   FolderInput,
-  Filter,
-  Eye,
+  RefreshCw,
   ChevronRight,
   ChevronDown,
   Folder,
@@ -49,7 +48,22 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
   const deleteDoc = trpc.documents.delete.useMutation();
   const uploadDoc = trpc.documents.upload.useMutation();
   const importFromFolder = trpc.documents.importFromFolder.useMutation();
+  const syncTracked = trpc.documents.syncTrackedFolders.useMutation();
   const utils = trpc.useUtils();
+
+  // Auto-sync tracked folders every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const result = await syncTracked.mutateAsync();
+        if (result.imported > 0) {
+          utils.documents.list.invalidate();
+          utils.documents.listFolders.invalidate();
+        }
+      } catch {}
+    }, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleFileUpload = async (files: FileList) => {
     for (const file of Array.from(files)) {
@@ -69,11 +83,15 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
 
   const handleImportFolder = async () => {
     if (!importPath.trim()) return;
-    await importFromFolder.mutateAsync({
+    const result = await importFromFolder.mutateAsync({
       folderPath: importPath.trim(),
       targetFolderId: currentFolderId,
     });
     utils.documents.list.invalidate();
+    utils.documents.listFolders.invalidate();
+    if (result.folderId) {
+      setCurrentFolderId(result.folderId);
+    }
     setShowImportFolder(false);
     setImportPath("");
   };
@@ -113,6 +131,21 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
           </p>
         </div>
         <div className="flex gap-2">
+          <button
+            onClick={async () => {
+              try {
+                const result = await syncTracked.mutateAsync();
+                utils.documents.list.invalidate();
+                utils.documents.listFolders.invalidate();
+              } catch {}
+            }}
+            disabled={syncTracked.isPending}
+            className="flex items-center gap-1.5 px-3 py-2 text-sm border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50"
+            title="Sincronizar pastas rastreadas"
+          >
+            <RefreshCw size={15} className={syncTracked.isPending ? "animate-spin" : ""} />
+            Sincronizar
+          </button>
           <button
             onClick={handleCreateFolder}
             className="flex items-center gap-1.5 px-3 py-2 text-sm border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"

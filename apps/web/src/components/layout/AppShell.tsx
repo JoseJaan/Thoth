@@ -6,6 +6,7 @@ import DocumentsPage from "../../pages/DocumentsPage";
 import DiagramsPage from "../../pages/DiagramsPage";
 import TasksPage from "../../pages/TasksPage";
 import FlashcardsPage from "../../pages/FlashcardsPage";
+import CalendarPage from "../../pages/CalendarPage";
 import DashboardPage from "../../pages/DashboardPage";
 import QuickCapture from "../QuickCapture";
 import PomodoroTimer from "../PomodoroTimer";
@@ -17,6 +18,7 @@ const pageConfig: Record<string, { title: string; color: string }> = {
   documents: { title: "Documentos", color: "var(--color-documents)" },
   diagrams: { title: "Diagramas", color: "var(--color-diagrams)" },
   tasks: { title: "Tarefas", color: "var(--color-tasks)" },
+  calendar: { title: "Calendario", color: "var(--color-calendar)" },
   flashcards: { title: "Flashcards", color: "var(--color-flashcards)" },
 };
 
@@ -73,6 +75,8 @@ export default function AppShell() {
         return <DiagramsPage />;
       case "tasks":
         return <TasksPage />;
+      case "calendar":
+        return <CalendarPage />;
       case "flashcards":
         return <FlashcardsPage />;
       default:

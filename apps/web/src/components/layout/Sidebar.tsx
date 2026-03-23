@@ -5,6 +5,7 @@ import {
   BookOpen,
   PenTool,
   CheckSquare,
+  CalendarDays,
   Brain,
   Home,
   Search,
@@ -33,6 +34,7 @@ const navItems: NavItem[] = [
   { id: "documents", label: "Documentos", icon: <BookOpen size={18} />, color: "var(--color-documents)", path: "documents" },
   { id: "diagrams", label: "Diagramas", icon: <PenTool size={18} />, color: "var(--color-diagrams)", path: "diagrams" },
   { id: "tasks", label: "Tarefas", icon: <CheckSquare size={18} />, color: "var(--color-tasks)", path: "tasks" },
+  { id: "calendar", label: "Calendario", icon: <CalendarDays size={18} />, color: "var(--color-calendar)", path: "calendar" },
   { id: "flashcards", label: "Flashcards", icon: <Brain size={18} />, color: "var(--color-flashcards)", path: "flashcards" },
 ];
 
@@ -180,9 +182,12 @@ export default function Sidebar({
     <aside className="w-64 h-screen bg-[var(--color-bg-sidebar)] border-r border-[var(--color-border)] flex flex-col shrink-0">
       {/* Logo */}
       <div className="px-4 py-4 border-b border-[var(--color-border)]">
-        <h1 className="text-xl font-bold bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-diagrams)] to-[var(--color-flashcards)] bg-clip-text text-transparent">
+        <button
+          onClick={() => onPageChange("dashboard")}
+          className="text-xl font-bold bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-diagrams)] to-[var(--color-flashcards)] bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+        >
           Thoth
-        </h1>
+        </button>
       </div>
 
       {/* Search */}

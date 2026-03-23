@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eq, isNull, asc, desc } from "drizzle-orm";
+import { eq, isNull, isNotNull, asc, desc } from "drizzle-orm";
 import { router, publicProcedure } from "../trpc.js";
 import { documents, documentFolders, documentNotes } from "../../db/schema.js";
 import { generateId, now } from "../../utils/id.js";
@@ -161,7 +161,38 @@ export const documentsRouter = router({
       const files = await importFolder(input.folderPath);
       const imported: string[] = [];
 
+      // Create or update a tracked folder with the source path
+      let folderId = input.targetFolderId;
+      if (!folderId) {
+        const folderName = path.basename(input.folderPath);
+        const id = generateId();
+        await ctx.db.insert(documentFolders).values({
+          id,
+          name: folderName,
+          parentId: null,
+          sourcePath: input.folderPath,
+          sortOrder: 0,
+          createdAt: now(),
+        });
+        folderId = id;
+      } else {
+        // Update existing folder with source path
+        await ctx.db
+          .update(documentFolders)
+          .set({ sourcePath: input.folderPath })
+          .where(eq(documentFolders.id, folderId));
+      }
+
+      // Get existing document names in this folder to avoid duplicates
+      const existingDocs = await ctx.db
+        .select({ originalName: documents.originalName })
+        .from(documents)
+        .where(eq(documents.folderId, folderId));
+      const existingNames = new Set(existingDocs.map((d) => d.originalName));
+
       for (const file of files) {
+        if (existingNames.has(file.name)) continue;
+
         const { filePath } = savePdf(file.buffer, file.name);
         const extractedText = await extractTextFromPdf(file.buffer);
 
@@ -177,7 +208,7 @@ export const documentsRouter = router({
           fileSize: file.size,
           readingStatus: "unread",
           extractedText,
-          folderId: input.targetFolderId,
+          folderId,
           createdAt: timestamp,
           updatedAt: timestamp,
         });
@@ -185,7 +216,65 @@ export const documentsRouter = router({
         imported.push(id);
       }
 
-      return { imported: imported.length, ids: imported };
+      return { imported: imported.length, ids: imported, folderId };
+    }),
+
+  syncTrackedFolders: publicProcedure
+    .mutation(async ({ ctx }) => {
+      // Find all folders with a sourcePath
+      const trackedFolders = await ctx.db
+        .select()
+        .from(documentFolders)
+        .where(isNotNull(documentFolders.sourcePath));
+
+      let totalImported = 0;
+
+      for (const folder of trackedFolders) {
+        if (!folder.sourcePath) continue;
+        if (!fs.existsSync(folder.sourcePath)) continue;
+
+        let files: Array<{ name: string; buffer: Buffer; size: number }>;
+        try {
+          files = await importFolder(folder.sourcePath);
+        } catch {
+          continue;
+        }
+
+        // Get existing document names in this folder
+        const existingDocs = await ctx.db
+          .select({ originalName: documents.originalName })
+          .from(documents)
+          .where(eq(documents.folderId, folder.id));
+        const existingNames = new Set(existingDocs.map((d) => d.originalName));
+
+        for (const file of files) {
+          if (existingNames.has(file.name)) continue;
+
+          const { filePath } = savePdf(file.buffer, file.name);
+          const extractedText = await extractTextFromPdf(file.buffer);
+
+          const id = generateId();
+          const timestamp = now();
+
+          await ctx.db.insert(documents).values({
+            id,
+            title: file.name.replace(/\.pdf$/i, ""),
+            authors: null,
+            filePath,
+            originalName: file.name,
+            fileSize: file.size,
+            readingStatus: "unread",
+            extractedText,
+            folderId: folder.id,
+            createdAt: timestamp,
+            updatedAt: timestamp,
+          });
+
+          totalImported++;
+        }
+      }
+
+      return { imported: totalImported };
     }),
 
   update: publicProcedure
