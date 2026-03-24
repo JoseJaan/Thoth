@@ -16,10 +16,10 @@ import { trpc } from "../trpc";
 import DocumentViewer from "../components/documents/DocumentViewer";
 
 const statusLabels: Record<string, { label: string; color: string; bg: string }> = {
-  unread: { label: "Nao lido", color: "#94a3b8", bg: "#f1f5f9" },
-  to_read: { label: "Para ler", color: "#f59e0b", bg: "#fef3c7" },
-  reading: { label: "Lendo", color: "#3b82f6", bg: "#dbeafe" },
-  read: { label: "Lido", color: "#10b981", bg: "#d1fae5" },
+  unread: { label: "Unread", color: "#94a3b8", bg: "#f1f5f9" },
+  to_read: { label: "To read", color: "#f59e0b", bg: "#fef3c7" },
+  reading: { label: "Reading", color: "#3b82f6", bg: "#dbeafe" },
+  read: { label: "Read", color: "#10b981", bg: "#d1fae5" },
 };
 
 interface DocumentsPageProps {
@@ -82,7 +82,7 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
           folderId: currentFolderId,
         });
       } catch (err) {
-        console.error(`Erro ao fazer upload de ${file.name}:`, err);
+        console.error(`Error uploading ${file.name}:`, err);
       }
     }
     utils.documents.list.invalidate();
@@ -104,14 +104,14 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
   };
 
   const handleCreateFolder = async () => {
-    const name = window.prompt("Nome da pasta:");
+    const name = window.prompt("Folder name:");
     if (!name) return;
     await createFolder.mutateAsync({ name, parentId: currentFolderId });
     utils.documents.listFolders.invalidate();
   };
 
   const handleDeleteDoc = async (id: string) => {
-    const deleteFile = window.confirm("Deseja tambem excluir o arquivo PDF do disco?");
+    const deleteFile = window.confirm("Do you also want to delete the PDF file from disk?");
     await deleteDoc.mutateAsync({ id, deleteFile });
     utils.documents.list.invalidate();
     if (activeDocId === id) setActiveDocId(null);
@@ -132,9 +132,9 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-xl font-bold text-slate-800">Documentos</h2>
+          <h2 className="text-xl font-bold text-slate-800">Documents</h2>
           <p className="text-sm text-slate-400">
-            Gerencie seus PDFs e artigos
+            Manage your PDFs and articles
           </p>
         </div>
         <div className="flex gap-2">
@@ -148,24 +148,24 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
             }}
             disabled={syncTracked.isPending}
             className="flex items-center gap-1.5 px-3 py-2 text-sm border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50"
-            title="Sincronizar pastas rastreadas"
+            title="Sync tracked folders"
           >
             <RefreshCw size={15} className={syncTracked.isPending ? "animate-spin" : ""} />
-            Sincronizar
+            Sync
           </button>
           <button
             onClick={handleCreateFolder}
             className="flex items-center gap-1.5 px-3 py-2 text-sm border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
           >
             <FolderPlus size={15} />
-            Pasta
+            Folder
           </button>
           <button
             onClick={() => setShowImportFolder(true)}
             className="flex items-center gap-1.5 px-3 py-2 text-sm border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
           >
             <FolderInput size={15} />
-            Importar pasta
+            Import folder
           </button>
           <label className="flex items-center gap-1.5 px-3 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors cursor-pointer">
             <Upload size={15} />
@@ -184,13 +184,13 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
       {/* Import folder modal */}
       {showImportFolder && (
         <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-          <p className="text-sm font-medium text-blue-800 mb-2">Importar PDFs de uma pasta</p>
+          <p className="text-sm font-medium text-blue-800 mb-2">Import PDFs from a folder</p>
 
           {/* Option 1: Select folder via file explorer */}
           <div className="flex gap-2 mb-3">
             <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm border-2 border-dashed border-blue-300 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer">
               <FolderInput size={16} className="text-blue-500" />
-              <span className="text-blue-700">Selecionar pasta pelo explorador</span>
+              <span className="text-blue-700">Select folder from explorer</span>
               <input
                 type="file"
                 {...({ webkitdirectory: "", directory: "" } as any)}
@@ -206,7 +206,7 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
 
                   // Extract folder name from webkitRelativePath
                   const firstPath = pdfFiles[0].webkitRelativePath;
-                  const folderName = firstPath ? firstPath.split("/")[0] : "Importados";
+                  const folderName = firstPath ? firstPath.split("/")[0] : "Imported";
 
                   // Create a folder for the imported files
                   const folder = await createFolder.mutateAsync({
@@ -229,7 +229,7 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
                         folderId: folder.id,
                       });
                     } catch (err) {
-                      console.error(`Erro ao fazer upload de ${file.name}:`, err);
+                      console.error(`Error uploading ${file.name}:`, err);
                     }
                   }
 
@@ -243,13 +243,13 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
           </div>
 
           {/* Option 2: Type path manually (server-side) */}
-          <p className="text-xs text-blue-600 mb-1">Ou digite o caminho da pasta no servidor:</p>
+          <p className="text-xs text-blue-600 mb-1">Or type the folder path on the server:</p>
           <div className="flex gap-2">
             <input
               type="text"
               value={importPath}
               onChange={(e) => setImportPath(e.target.value)}
-              placeholder="C:\caminho\para\pasta\com\pdfs"
+              placeholder="C:\path\to\folder\with\pdfs"
               className="flex-1 px-3 py-2 text-sm border border-blue-200 rounded-lg outline-none focus:border-blue-400"
             />
             <button
@@ -257,22 +257,22 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
               disabled={importFromFolder.isPending}
               className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
             >
-              {importFromFolder.isPending ? "Importando..." : "Importar"}
+              {importFromFolder.isPending ? "Importing..." : "Import"}
             </button>
             <button
               onClick={() => setShowImportFolder(false)}
               className="px-3 py-2 text-sm text-slate-500 hover:bg-slate-100 rounded-lg"
             >
-              Cancelar
+              Cancel
             </button>
           </div>
           {importFromFolder.isSuccess && (
             <p className="text-sm text-green-600 mt-2">
-              {importFromFolder.data.imported} PDFs importados!
+              {importFromFolder.data.imported} PDFs imported!
             </p>
           )}
           {uploadDoc.isPending && (
-            <p className="text-sm text-blue-500 mt-2">Enviando PDFs...</p>
+            <p className="text-sm text-blue-500 mt-2">Uploading PDFs...</p>
           )}
         </div>
       )}
@@ -285,7 +285,7 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
             !statusFilter ? "bg-slate-800 text-white" : "bg-slate-100 text-slate-500 hover:bg-slate-200"
           }`}
         >
-          Todos
+          All
         </button>
         {Object.entries(statusLabels).map(([key, { label, color, bg }]) => (
           <button
@@ -311,10 +311,10 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
             onClick={() => setCurrentFolderId(null)}
             className="text-blue-500 hover:underline"
           >
-            Raiz
+            Root
           </button>
           <ChevronRight size={14} className="text-slate-300" />
-          <span className="text-slate-600">Pasta atual</span>
+          <span className="text-slate-600">Current folder</span>
         </div>
       )}
 
@@ -334,7 +334,7 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (window.confirm(`Excluir pasta "${folder.name}"?`)) {
+                  if (window.confirm(`Delete folder "${folder.name}"?`)) {
                     deleteFolder.mutate({ id: folder.id }, {
                       onSuccess: () => utils.documents.listFolders.invalidate(),
                     });
@@ -394,16 +394,16 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
             <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center bg-blue-100 text-blue-400 mb-4">
               <BookOpen size={28} />
             </div>
-            <h3 className="text-lg font-semibold text-slate-600 mb-1">Nenhum documento</h3>
+            <h3 className="text-lg font-semibold text-slate-600 mb-1">No documents</h3>
             <p className="text-sm text-slate-400">
-              Faca upload de PDFs ou importe de uma pasta
+              Upload PDFs or import from a folder
             </p>
           </div>
         )}
 
         {(uploadDoc.isPending || importFromFolder.isPending) && (
           <div className="text-center py-4 text-sm text-blue-500">
-            Processando...
+            Processing...
           </div>
         )}
       </div>

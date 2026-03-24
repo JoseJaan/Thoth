@@ -72,7 +72,7 @@ function StatsBar({ onStartReview }: { onStartReview: () => void }) {
             <Target size={16} className="text-amber-600" />
           </div>
           <div>
-            <p className="text-xs text-slate-400">Pendentes</p>
+            <p className="text-xs text-slate-400">Due</p>
             <p className="text-lg font-bold text-amber-600">
               {stats.data?.due ?? 0}
             </p>
@@ -84,7 +84,7 @@ function StatsBar({ onStartReview }: { onStartReview: () => void }) {
             <TrendingUp size={16} className="text-green-600" />
           </div>
           <div>
-            <p className="text-xs text-slate-400">Revisados hoje</p>
+            <p className="text-xs text-slate-400">Reviewed today</p>
             <p className="text-lg font-bold text-green-600">
               {stats.data?.reviewedToday ?? 0}
             </p>
@@ -98,7 +98,7 @@ function StatsBar({ onStartReview }: { onStartReview: () => void }) {
           className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg font-medium hover:from-pink-600 hover:to-purple-600 transition-all shadow-sm"
         >
           <Zap size={16} />
-          Revisar ({stats.data?.due})
+          Review ({stats.data?.due})
         </button>
       )}
     </div>
@@ -131,14 +131,14 @@ function ManageView({
 
       <div className="flex items-center justify-between px-6 py-3">
         <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
-          Todos os Cards ({cards.data?.length ?? 0})
+          All Cards ({cards.data?.length ?? 0})
         </h2>
         <button
           onClick={onCreateNew}
           className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
         >
           <Plus size={14} />
-          Novo Card
+          New Card
         </button>
       </div>
 
@@ -147,17 +147,17 @@ function ManageView({
           <div className="flex flex-col items-center justify-center py-20 text-slate-400">
             <Brain size={48} className="mb-4 text-pink-300" />
             <p className="text-lg font-medium text-slate-500">
-              Nenhum flashcard ainda
+              No flashcards yet
             </p>
             <p className="text-sm mt-1">
-              Crie seus primeiros cards para comecar a estudar
+              Create your first cards to start studying
             </p>
             <button
               onClick={onCreateNew}
               className="mt-4 flex items-center gap-2 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
             >
               <Plus size={16} />
-              Criar Flashcard
+              Create Flashcard
             </button>
           </div>
         ) : (
@@ -177,7 +177,7 @@ function ManageView({
                           : "bg-green-100 text-green-700"
                       }`}
                     >
-                      {isDue ? "Pendente" : `${card.interval}d`}
+                      {isDue ? "Due" : `${card.interval}d`}
                     </span>
                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
@@ -196,14 +196,14 @@ function ManageView({
                   </div>
 
                   <div className="mb-3">
-                    <p className="text-xs text-slate-400 mb-1">Frente</p>
+                    <p className="text-xs text-slate-400 mb-1">Front</p>
                     <p className="text-sm font-medium text-slate-800 line-clamp-2">
                       {card.front}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs text-slate-400 mb-1">Verso</p>
+                    <p className="text-xs text-slate-400 mb-1">Back</p>
                     <p className="text-sm text-slate-600 line-clamp-2">
                       {card.back}
                     </p>
@@ -256,12 +256,12 @@ function ReviewView({ onBack }: { onBack: () => void }) {
   };
 
   const ratingLabels = [
-    { label: "Esqueci", color: "bg-red-500 hover:bg-red-600", value: 0 },
-    { label: "Muito difícil", color: "bg-orange-500 hover:bg-orange-600", value: 1 },
-    { label: "Difícil", color: "bg-amber-500 hover:bg-amber-600", value: 2 },
+    { label: "Forgot", color: "bg-red-500 hover:bg-red-600", value: 0 },
+    { label: "Very hard", color: "bg-orange-500 hover:bg-orange-600", value: 1 },
+    { label: "Hard", color: "bg-amber-500 hover:bg-amber-600", value: 2 },
     { label: "Ok", color: "bg-yellow-500 hover:bg-yellow-600", value: 3 },
-    { label: "Fácil", color: "bg-lime-500 hover:bg-lime-600", value: 4 },
-    { label: "Muito fácil", color: "bg-green-500 hover:bg-green-600", value: 5 },
+    { label: "Easy", color: "bg-lime-500 hover:bg-lime-600", value: 4 },
+    { label: "Very easy", color: "bg-green-500 hover:bg-green-600", value: 5 },
   ];
 
   if (totalDue === 0 || !currentCard) {
@@ -271,19 +271,19 @@ function ReviewView({ onBack }: { onBack: () => void }) {
           <Check size={36} className="text-green-600" />
         </div>
         <h2 className="text-2xl font-bold text-slate-800 mb-2">
-          Tudo revisado!
+          All reviewed!
         </h2>
         <p className="text-slate-500 mb-1">
           {reviewedCount > 0
-            ? `Voce revisou ${reviewedCount} card${reviewedCount > 1 ? "s" : ""} nesta sessao.`
-            : "Nenhum card pendente para revisao."}
+            ? `You reviewed ${reviewedCount} card${reviewedCount > 1 ? "s" : ""} in this session.`
+            : "No cards due for review."}
         </p>
         <button
           onClick={onBack}
           className="mt-4 flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
         >
           <ChevronLeft size={16} />
-          Voltar
+          Back
         </button>
       </div>
     );
@@ -298,7 +298,7 @@ function ReviewView({ onBack }: { onBack: () => void }) {
           className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700"
         >
           <ChevronLeft size={16} />
-          Voltar
+          Back
         </button>
         <div className="flex items-center gap-3">
           <span className="text-sm text-slate-500">
@@ -324,19 +324,19 @@ function ReviewView({ onBack }: { onBack: () => void }) {
           {!flipped ? (
             <>
               <span className="text-xs text-pink-500 font-medium uppercase tracking-wider mb-4">
-                Frente
+                Front
               </span>
               <p className="text-xl text-center font-medium text-slate-800 leading-relaxed">
                 {currentCard.front}
               </p>
               <p className="mt-6 text-xs text-slate-400">
-                Clique para virar
+                Click to flip
               </p>
             </>
           ) : (
             <>
               <span className="text-xs text-purple-500 font-medium uppercase tracking-wider mb-4">
-                Verso
+                Back
               </span>
               <p className="text-xl text-center text-slate-700 leading-relaxed">
                 {currentCard.back}
@@ -349,7 +349,7 @@ function ReviewView({ onBack }: { onBack: () => void }) {
         {flipped && (
           <div className="mt-8 space-y-3">
             <p className="text-center text-sm text-slate-500 mb-2">
-              Como foi?
+              How was it?
             </p>
             <div className="flex gap-2 flex-wrap justify-center">
               {ratingLabels.map((r) => (
@@ -375,7 +375,7 @@ function ReviewView({ onBack }: { onBack: () => void }) {
             className="mt-6 flex items-center gap-2 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
           >
             <RotateCcw size={16} />
-            Mostrar Resposta
+            Show Answer
           </button>
         )}
       </div>
@@ -402,7 +402,7 @@ function CreateCardModal({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h3 className="font-semibold text-slate-800">Novo Flashcard</h3>
+          <h3 className="font-semibold text-slate-800">New Flashcard</h3>
           <button
             onClick={onClose}
             className="p-1 hover:bg-slate-100 rounded"
@@ -414,26 +414,26 @@ function CreateCardModal({ onClose }: { onClose: () => void }) {
         <div className="p-6 space-y-4">
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1">
-              Frente (pergunta)
+              Front (question)
             </label>
             <textarea
               value={front}
               onChange={(e) => setFront(e.target.value)}
               rows={3}
-              placeholder="Ex: O que e o padrao Observer?"
+              placeholder="E.g.: What is the Observer pattern?"
               className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-pink-400 resize-none"
               autoFocus
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1">
-              Verso (resposta)
+              Back (answer)
             </label>
             <textarea
               value={back}
               onChange={(e) => setBack(e.target.value)}
               rows={3}
-              placeholder="Ex: Um padrao comportamental que define uma dependencia um-para-muitos..."
+              placeholder="E.g.: A behavioral pattern that defines a one-to-many dependency..."
               className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-pink-400 resize-none"
             />
           </div>
@@ -444,14 +444,14 @@ function CreateCardModal({ onClose }: { onClose: () => void }) {
             onClick={onClose}
             className="px-4 py-2 text-sm text-slate-600 hover:bg-slate-200 rounded-lg transition-colors"
           >
-            Cancelar
+            Cancel
           </button>
           <button
             onClick={handleCreate}
             disabled={!front.trim() || !back.trim() || createCard.isPending}
             className="px-4 py-2 text-sm bg-pink-500 text-white rounded-lg hover:bg-pink-600 disabled:opacity-50 transition-colors"
           >
-            Criar Card
+            Create Card
           </button>
         </div>
       </div>
@@ -498,7 +498,7 @@ function EditCardModal({
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h3 className="font-semibold text-slate-800">Editar Flashcard</h3>
+          <h3 className="font-semibold text-slate-800">Edit Flashcard</h3>
           <button
             onClick={onClose}
             className="p-1 hover:bg-slate-100 rounded"
@@ -510,7 +510,7 @@ function EditCardModal({
         <div className="p-6 space-y-4">
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1">
-              Frente
+              Front
             </label>
             <textarea
               value={front}
@@ -521,7 +521,7 @@ function EditCardModal({
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1">
-              Verso
+              Back
             </label>
             <textarea
               value={back}
@@ -537,14 +537,14 @@ function EditCardModal({
             onClick={onClose}
             className="px-4 py-2 text-sm text-slate-600 hover:bg-slate-200 rounded-lg transition-colors"
           >
-            Cancelar
+            Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={!front.trim() || !back.trim() || updateCard.isPending}
             className="px-4 py-2 text-sm bg-pink-500 text-white rounded-lg hover:bg-pink-600 disabled:opacity-50 transition-colors"
           >
-            Salvar
+            Save
           </button>
         </div>
       </div>

@@ -29,15 +29,15 @@ import { Placeholder } from "@tiptap/extension-placeholder";
 import { useDebouncedCallback } from "../hooks/useDebounce";
 
 const columns = [
-  { id: "todo", label: "A fazer", color: "#94a3b8", bg: "#f1f5f9" },
-  { id: "in_progress", label: "Em progresso", color: "#3b82f6", bg: "#dbeafe" },
-  { id: "done", label: "Concluido", color: "#10b981", bg: "#d1fae5" },
+  { id: "todo", label: "To do", color: "#94a3b8", bg: "#f1f5f9" },
+  { id: "in_progress", label: "In progress", color: "#3b82f6", bg: "#dbeafe" },
+  { id: "done", label: "Done", color: "#10b981", bg: "#d1fae5" },
 ] as const;
 
 const priorityConfig = {
-  low: { label: "Baixa", color: "#94a3b8", icon: "↓" },
-  medium: { label: "Media", color: "#f59e0b", icon: "→" },
-  high: { label: "Alta", color: "#ef4444", icon: "↑" },
+  low: { label: "Low", color: "#94a3b8", icon: "↓" },
+  medium: { label: "Medium", color: "#f59e0b", icon: "→" },
+  high: { label: "High", color: "#ef4444", icon: "↑" },
 };
 
 interface TaskCardProps {
@@ -83,7 +83,7 @@ function SortableTaskCard({ task, onSelect, onDelete }: TaskCardProps) {
             {task.dueDate && (
               <span className="flex items-center gap-0.5 text-[10px] text-slate-400">
                 <Calendar size={10} />
-                {new Date(task.dueDate).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })}
+                {new Date(task.dueDate).toLocaleDateString("en-US", { day: "2-digit", month: "short" })}
               </span>
             )}
           </div>
@@ -276,7 +276,7 @@ export default function TasksPage() {
                             if (e.key === "Enter") handleCreate(col.id);
                             if (e.key === "Escape") setAddingInColumn(null);
                           }}
-                          placeholder="Titulo da tarefa..."
+                          placeholder="Task title..."
                           className="w-full text-sm outline-none bg-transparent"
                           autoFocus
                         />
@@ -285,13 +285,13 @@ export default function TasksPage() {
                             onClick={() => handleCreate(col.id)}
                             className="px-2 py-1 text-xs bg-emerald-500 text-white rounded hover:bg-emerald-600"
                           >
-                            Criar
+                            Create
                           </button>
                           <button
                             onClick={() => setAddingInColumn(null)}
                             className="px-2 py-1 text-xs text-slate-400 hover:bg-slate-100 rounded"
                           >
-                            Cancelar
+                            Cancel
                           </button>
                         </div>
                       </div>
@@ -347,7 +347,7 @@ function TaskDetailPanel({ task, onClose }: { task: any; onClose: () => void }) 
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Placeholder.configure({ placeholder: "Descricao da tarefa..." }),
+      Placeholder.configure({ placeholder: "Task description..." }),
     ],
     content: parseContent(),
     onUpdate: ({ editor }) => {
@@ -363,7 +363,7 @@ function TaskDetailPanel({ task, onClose }: { task: any; onClose: () => void }) 
   return (
     <div className="w-80 border-l border-slate-200 bg-white flex flex-col shrink-0">
       <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
-        <span className="text-sm font-medium text-slate-700">Detalhes</span>
+        <span className="text-sm font-medium text-slate-700">Details</span>
         <button onClick={onClose} className="p-1 hover:bg-slate-100 rounded">
           <X size={14} className="text-slate-400" />
         </button>
@@ -383,7 +383,7 @@ function TaskDetailPanel({ task, onClose }: { task: any; onClose: () => void }) 
 
         {/* Priority */}
         <div>
-          <label className="text-xs font-medium text-slate-500 mb-1 block">Prioridade</label>
+          <label className="text-xs font-medium text-slate-500 mb-1 block">Priority</label>
           <div className="flex gap-1">
             {(["low", "medium", "high"] as const).map((p) => {
               const cfg = priorityConfig[p];
@@ -413,7 +413,7 @@ function TaskDetailPanel({ task, onClose }: { task: any; onClose: () => void }) 
 
         {/* Due date */}
         <div>
-          <label className="text-xs font-medium text-slate-500 mb-1 block">Data limite</label>
+          <label className="text-xs font-medium text-slate-500 mb-1 block">Due date</label>
           <input
             type="date"
             value={task.dueDate?.split("T")[0] || ""}
@@ -448,7 +448,7 @@ function TaskDetailPanel({ task, onClose }: { task: any; onClose: () => void }) 
 
         {/* Description */}
         <div>
-          <label className="text-xs font-medium text-slate-500 mb-1 block">Descricao</label>
+          <label className="text-xs font-medium text-slate-500 mb-1 block">Description</label>
           <div className="border border-slate-200 rounded-lg overflow-hidden">
             <EditorContent editor={editor} />
           </div>

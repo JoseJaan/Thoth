@@ -25,7 +25,7 @@ export const diagramsRouter = router({
   create: publicProcedure
     .input(
       z.object({
-        title: z.string().default("Sem titulo"),
+        title: z.string().default("Untitled"),
         data: z.string().default("{}"),
       })
     )

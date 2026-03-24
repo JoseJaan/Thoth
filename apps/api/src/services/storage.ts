@@ -35,7 +35,7 @@ export function listPdfsInFolder(folderPath: string): Array<{ name: string; full
   const results: Array<{ name: string; fullPath: string }> = [];
 
   if (!fs.existsSync(folderPath)) {
-    throw new Error(`Pasta nao encontrada: ${folderPath}`);
+    throw new Error(`Folder not found: ${folderPath}`);
   }
 
   function scanDir(dirPath: string) {

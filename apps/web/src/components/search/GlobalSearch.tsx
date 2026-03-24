@@ -3,10 +3,10 @@ import { Search, FileText, BookOpen, PenTool, CheckSquare, X } from "lucide-reac
 import { trpc } from "../../trpc";
 
 const typeConfig = {
-  note: { icon: <FileText size={14} />, color: "var(--color-notes)", label: "Nota" },
-  document: { icon: <BookOpen size={14} />, color: "var(--color-documents)", label: "Documento" },
-  diagram: { icon: <PenTool size={14} />, color: "var(--color-diagrams)", label: "Diagrama" },
-  task: { icon: <CheckSquare size={14} />, color: "var(--color-tasks)", label: "Tarefa" },
+  note: { icon: <FileText size={14} />, color: "var(--color-notes)", label: "Note" },
+  document: { icon: <BookOpen size={14} />, color: "var(--color-documents)", label: "Document" },
+  diagram: { icon: <PenTool size={14} />, color: "var(--color-diagrams)", label: "Diagram" },
+  task: { icon: <CheckSquare size={14} />, color: "var(--color-tasks)", label: "Task" },
 };
 
 interface GlobalSearchProps {
@@ -63,7 +63,7 @@ export default function GlobalSearch({ isOpen, onClose, onSelectResult }: Global
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Buscar em notas, documentos, diagramas, tarefas..."
+            placeholder="Search notes, documents, diagrams, tasks..."
             className="flex-1 text-sm outline-none bg-transparent placeholder:text-slate-300"
           />
           {query && (
@@ -80,19 +80,19 @@ export default function GlobalSearch({ isOpen, onClose, onSelectResult }: Global
         <div className="max-h-80 overflow-auto">
           {query.length < 2 && (
             <div className="px-4 py-8 text-center text-sm text-slate-400">
-              Digite pelo menos 2 caracteres para buscar
+              Type at least 2 characters to search
             </div>
           )}
 
           {query.length >= 2 && searchResults.isLoading && (
             <div className="px-4 py-8 text-center text-sm text-slate-400">
-              Buscando...
+              Searching...
             </div>
           )}
 
           {query.length >= 2 && allResults.length === 0 && !searchResults.isLoading && (
             <div className="px-4 py-8 text-center text-sm text-slate-400">
-              Nenhum resultado encontrado
+              No results found
             </div>
           )}
 

@@ -15,13 +15,13 @@ function getGreeting(): { title: string; subtitle: string } {
 
   const timeGreeting =
     hour >= 5 && hour < 12
-      ? "Bom dia!"
+      ? "Good morning!"
       : hour >= 12 && hour < 18
-        ? "Boa tarde!"
-        : "Boa noite!";
+        ? "Good afternoon!"
+        : "Good evening!";
 
   const subtitles = [
-    "Bons estudos!",
+    "Happy studying!",
   ];
 
   const subtitle = subtitles[Math.floor(Math.random() * subtitles.length)];
@@ -42,32 +42,32 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
 
   const sections = [
     {
-      label: "Notas",
-      description: "Crie e organize suas anotacoes",
+      label: "Notes",
+      description: "Create and organize your notes",
       icon: <FileText size={24} />,
       color: "var(--color-notes)",
       path: "notes",
       count: notes.data?.length ?? 0,
     },
     {
-      label: "Documentos",
-      description: "Gerencie seus PDFs e artigos",
+      label: "Documents",
+      description: "Manage your PDFs and articles",
       icon: <BookOpen size={24} />,
       color: "var(--color-documents)",
       path: "documents",
       count: documents.data?.length ?? 0,
     },
     {
-      label: "Diagramas",
-      description: "Desenhe diagramas e fluxogramas",
+      label: "Diagrams",
+      description: "Draw diagrams and flowcharts",
       icon: <PenTool size={24} />,
       color: "var(--color-diagrams)",
       path: "diagrams",
       count: diagrams.data?.length ?? 0,
     },
     {
-      label: "Tarefas",
-      description: "Organize suas atividades",
+      label: "Tasks",
+      description: "Organize your activities",
       icon: <CheckSquare size={24} />,
       color: "var(--color-tasks)",
       path: "tasks",
@@ -75,7 +75,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
     },
     {
       label: "Flashcards",
-      description: "Estude com repeticao espacada",
+      description: "Study with spaced repetition",
       icon: <Brain size={24} />,
       color: "var(--color-flashcards)",
       path: "flashcards",
@@ -121,12 +121,12 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
             <div>
               <p className="text-sm font-medium text-slate-700">
                 {dueFlashcards > 0
-                  ? `${dueFlashcards} flashcard${dueFlashcards > 1 ? "s" : ""} pendente${dueFlashcards > 1 ? "s" : ""} para revisao`
-                  : "Todos os flashcards revisados!"}
+                  ? `${dueFlashcards} flashcard${dueFlashcards > 1 ? "s" : ""} due for review`
+                  : "All flashcards reviewed!"}
               </p>
               {reviewedToday > 0 && (
                 <p className="text-xs text-slate-500">
-                  {reviewedToday} revisado{reviewedToday > 1 ? "s" : ""} hoje
+                  {reviewedToday} reviewed today
                 </p>
               )}
             </div>
@@ -137,7 +137,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
               className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-sm rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all"
             >
               <Zap size={14} />
-              Revisar agora
+              Review now
             </button>
           )}
         </div>
@@ -188,19 +188,19 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
                 <FileText size={12} />
               </div>
               <h3 className="text-sm font-semibold text-slate-700">
-                Notas recentes
+                Recent notes
               </h3>
             </div>
             <button
               onClick={() => onNavigate("notes")}
               className="text-xs text-indigo-500 hover:text-indigo-700"
             >
-              Ver todas
+              View all
             </button>
           </div>
           {recentNotes.length === 0 ? (
             <p className="text-xs text-slate-400 py-4 text-center">
-              Nenhuma nota ainda
+              No notes yet
             </p>
           ) : (
             <div className="space-y-2">
@@ -212,10 +212,10 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
                 >
                   <FileText size={14} className="text-amber-500 shrink-0" />
                   <span className="text-sm text-slate-700 truncate flex-1">
-                    {note.title || "Sem titulo"}
+                    {note.title || "Untitled"}
                   </span>
                   <span className="text-[10px] text-slate-400">
-                    {new Date(note.updatedAt).toLocaleDateString("pt-BR")}
+                    {new Date(note.updatedAt).toLocaleDateString("en-US")}
                   </span>
                 </div>
               ))}
@@ -234,19 +234,19 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
                 <CheckSquare size={12} />
               </div>
               <h3 className="text-sm font-semibold text-slate-700">
-                Tarefas pendentes
+                Pending tasks
               </h3>
             </div>
             <button
               onClick={() => onNavigate("tasks")}
               className="text-xs text-indigo-500 hover:text-indigo-700"
             >
-              Ver todas
+              View all
             </button>
           </div>
           {pendingTasks.length === 0 ? (
             <p className="text-xs text-slate-400 py-4 text-center">
-              Nenhuma tarefa pendente
+              No pending tasks
             </p>
           ) : (
             <div className="space-y-2">
@@ -275,7 +275,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
                         : "bg-slate-100 text-slate-500"
                     }`}
                   >
-                    {task.status === "in_progress" ? "Em progresso" : "A fazer"}
+                    {task.status === "in_progress" ? "In progress" : "To do"}
                   </span>
                 </div>
               ))}
@@ -294,19 +294,19 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
                 <BookOpen size={12} />
               </div>
               <h3 className="text-sm font-semibold text-slate-700">
-                Documentos recentes
+                Recent documents
               </h3>
             </div>
             <button
               onClick={() => onNavigate("documents")}
               className="text-xs text-indigo-500 hover:text-indigo-700"
             >
-              Ver todos
+              View all
             </button>
           </div>
           {recentDocs.length === 0 ? (
             <p className="text-xs text-slate-400 py-4 text-center">
-              Nenhum documento ainda
+              No documents yet
             </p>
           ) : (
             <div className="space-y-2">
@@ -330,10 +330,10 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
                     }`}
                   >
                     {doc.readingStatus === "read"
-                      ? "Lido"
+                      ? "Read"
                       : doc.readingStatus === "reading"
-                        ? "Lendo"
-                        : "Nao lido"}
+                        ? "Reading"
+                        : "Unread"}
                   </span>
                 </div>
               ))}
@@ -359,7 +359,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
               onClick={() => onNavigate("flashcards")}
               className="text-xs text-indigo-500 hover:text-indigo-700"
             >
-              Ver todos
+              View all
             </button>
           </div>
           <div className="grid grid-cols-3 gap-3">
@@ -373,13 +373,13 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
               <p className="text-2xl font-bold text-amber-600">
                 {flashcardStats.data?.due ?? 0}
               </p>
-              <p className="text-[10px] text-amber-500 mt-0.5">Pendentes</p>
+              <p className="text-[10px] text-amber-500 mt-0.5">Due</p>
             </div>
             <div className="text-center p-3 rounded-lg bg-green-50">
               <p className="text-2xl font-bold text-green-600">
                 {flashcardStats.data?.reviewedToday ?? 0}
               </p>
-              <p className="text-[10px] text-green-500 mt-0.5">Hoje</p>
+              <p className="text-[10px] text-green-500 mt-0.5">Today</p>
             </div>
           </div>
         </div>
@@ -390,17 +390,17 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
         <div className="flex items-center gap-3">
           <Sparkles size={20} className="text-indigo-500" />
           <div>
-            <p className="text-sm font-medium text-indigo-700">Dica rapida</p>
+            <p className="text-sm font-medium text-indigo-700">Quick tip</p>
             <p className="text-xs text-indigo-500">
               Use{" "}
               <kbd className="px-1.5 py-0.5 bg-white rounded text-[10px] font-mono shadow-sm">
                 Ctrl+Shift+N
               </kbd>{" "}
-              para captura rapida e{" "}
+              for quick capture and{" "}
               <kbd className="px-1.5 py-0.5 bg-white rounded text-[10px] font-mono shadow-sm">
                 Ctrl+Shift+K
               </kbd>{" "}
-              para buscar.
+              to search.
             </p>
           </div>
         </div>

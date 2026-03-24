@@ -13,12 +13,12 @@ import PomodoroTimer from "../PomodoroTimer";
 import GlobalSearch from "../search/GlobalSearch";
 
 const pageConfig: Record<string, { title: string; color: string }> = {
-  dashboard: { title: "Inicio", color: "var(--color-primary)" },
-  notes: { title: "Notas", color: "var(--color-notes)" },
-  documents: { title: "Documentos", color: "var(--color-documents)" },
-  diagrams: { title: "Diagramas", color: "var(--color-diagrams)" },
-  tasks: { title: "Tarefas", color: "var(--color-tasks)" },
-  calendar: { title: "Calendario", color: "var(--color-calendar)" },
+  dashboard: { title: "Home", color: "var(--color-primary)" },
+  notes: { title: "Notes", color: "var(--color-notes)" },
+  documents: { title: "Documents", color: "var(--color-documents)" },
+  diagrams: { title: "Diagrams", color: "var(--color-diagrams)" },
+  tasks: { title: "Tasks", color: "var(--color-tasks)" },
+  calendar: { title: "Calendar", color: "var(--color-calendar)" },
   flashcards: { title: "Flashcards", color: "var(--color-flashcards)" },
 };
 

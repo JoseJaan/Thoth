@@ -75,7 +75,7 @@ export default function QuickCapture({ onClose, onNoteCreated, onTaskCreated }: 
             }`}
           >
             <FileText size={16} />
-            Nota
+            Note
           </button>
           <button
             onClick={() => setType("task")}
@@ -86,7 +86,7 @@ export default function QuickCapture({ onClose, onNoteCreated, onTaskCreated }: 
             }`}
           >
             <CheckSquare size={16} />
-            Tarefa
+            Task
           </button>
         </div>
 
@@ -98,13 +98,13 @@ export default function QuickCapture({ onClose, onNoteCreated, onTaskCreated }: 
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder={
-              type === "note" ? "Titulo da nota..." : "O que precisa fazer?"
+              type === "note" ? "Note title..." : "What needs to be done?"
             }
             className="w-full text-lg outline-none border-none bg-transparent placeholder:text-slate-300"
           />
           <div className="flex items-center justify-between mt-4">
             <p className="text-xs text-slate-400">
-              Enter para criar &middot; Esc para fechar
+              Enter to create &middot; Esc to close
             </p>
             <button
               type="submit"
@@ -117,7 +117,7 @@ export default function QuickCapture({ onClose, onNoteCreated, onTaskCreated }: 
                     : "var(--color-tasks)",
               }}
             >
-              Criar
+              Create
             </button>
           </div>
         </form>

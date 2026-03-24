@@ -74,7 +74,7 @@ export const notesRouter = router({
   create: publicProcedure
     .input(
       z.object({
-        title: z.string().default("Sem título"),
+        title: z.string().default("Untitled"),
         content: z.string().default("{}"),
         parentId: z.string().nullable().default(null),
         isFolder: z.boolean().default(false),

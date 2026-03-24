@@ -55,7 +55,7 @@ export default function NotesPage({ selectedNoteId, onSelectNote }: NotesPagePro
 
   const handleCreate = async () => {
     const newNote = await createNote.mutateAsync({
-      title: "Sem titulo",
+      title: "Untitled",
       isFolder: false,
       parentId: null,
       content: "{}",
@@ -81,7 +81,7 @@ export default function NotesPage({ selectedNoteId, onSelectNote }: NotesPagePro
           className="flex items-center gap-1.5 px-6 py-2 text-sm text-slate-500 hover:text-slate-700 transition-colors border-b border-slate-100 shrink-0"
         >
           <ArrowLeft size={14} />
-          Voltar para notas
+          Back to notes
         </button>
         <div className="flex-1 overflow-auto">
           <NoteEditor key={note.data.id} note={note.data} />
@@ -121,9 +121,9 @@ export default function NotesPage({ selectedNoteId, onSelectNote }: NotesPagePro
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-800">Notas</h2>
+          <h2 className="text-xl font-bold text-slate-800">Notes</h2>
           <p className="text-sm text-slate-400">
-            {filteredNotes.length} nota{filteredNotes.length !== 1 ? "s" : ""}
+            {filteredNotes.length} note{filteredNotes.length !== 1 ? "s" : ""}
           </p>
         </div>
         <button
@@ -131,7 +131,7 @@ export default function NotesPage({ selectedNoteId, onSelectNote }: NotesPagePro
           className="flex items-center gap-1.5 px-4 py-2 text-sm bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors shadow-sm"
         >
           <Plus size={15} />
-          Nova nota
+          New note
         </button>
       </div>
 
@@ -162,7 +162,7 @@ export default function NotesPage({ selectedNoteId, onSelectNote }: NotesPagePro
               onClick={() => setFilterTagIds([])}
               className="text-xs text-slate-400 hover:text-slate-600 ml-1"
             >
-              Limpar filtros
+              Clear filters
             </button>
           )}
         </div>
@@ -175,19 +175,19 @@ export default function NotesPage({ selectedNoteId, onSelectNote }: NotesPagePro
             <FileText size={28} />
           </div>
           <h3 className="text-lg font-semibold text-slate-600 mb-1">
-            {filterTagIds.length > 0 ? "Nenhuma nota com essas tags" : "Nenhuma nota ainda"}
+            {filterTagIds.length > 0 ? "No notes with these tags" : "No notes yet"}
           </h3>
           <p className="text-sm text-slate-400 mb-4">
             {filterTagIds.length > 0
-              ? "Tente outros filtros ou crie uma nova nota"
-              : "Crie sua primeira nota"}
+              ? "Try other filters or create a new note"
+              : "Create your first note"}
           </p>
           {filterTagIds.length === 0 && (
             <button
               onClick={handleCreate}
               className="px-4 py-2 text-sm bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors"
             >
-              Criar nota
+              Create note
             </button>
           )}
         </div>
@@ -214,7 +214,7 @@ export default function NotesPage({ selectedNoteId, onSelectNote }: NotesPagePro
                   style={{ color: color.text }}
                 >
                   {note.icon ? `${note.icon} ` : ""}
-                  {note.title || "Sem titulo"}
+                  {note.title || "Untitled"}
                 </h4>
 
                 {/* Content preview */}
@@ -244,7 +244,7 @@ export default function NotesPage({ selectedNoteId, onSelectNote }: NotesPagePro
 
                 {/* Date */}
                 <p className="text-[10px] mt-auto opacity-50" style={{ color: color.text }}>
-                  {new Date(note.updatedAt).toLocaleDateString("pt-BR")}
+                  {new Date(note.updatedAt).toLocaleDateString("en-US")}
                 </p>
               </button>
             );

@@ -31,10 +31,10 @@ interface OutlineItem {
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const statusOptions = [
-  { value: "unread", label: "Nao lido", color: "#94a3b8" },
-  { value: "to_read", label: "Para ler", color: "#f59e0b" },
-  { value: "reading", label: "Lendo", color: "#3b82f6" },
-  { value: "read", label: "Lido", color: "#10b981" },
+  { value: "unread", label: "Unread", color: "#94a3b8" },
+  { value: "to_read", label: "To read", color: "#f59e0b" },
+  { value: "reading", label: "Reading", color: "#3b82f6" },
+  { value: "read", label: "Read", color: "#10b981" },
 ];
 
 interface DocumentViewerProps {
@@ -153,7 +153,7 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
   if (!doc.data) {
     return (
       <div className="flex items-center justify-center h-full">
-        <span className="text-slate-400">Carregando...</span>
+        <span className="text-slate-400">Loading...</span>
       </div>
     );
   }
@@ -231,7 +231,7 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
               <button
                 onClick={() => setShowOutline(!showOutline)}
                 className={`p-1 rounded transition-colors ${showOutline ? "bg-blue-100 text-blue-600" : "hover:bg-slate-100 text-slate-500"}`}
-                title="Indice"
+                title="Table of Contents"
               >
                 <List size={16} />
               </button>
@@ -264,7 +264,7 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
             <div className="w-64 border-r border-slate-200 bg-white overflow-auto shrink-0">
               <div className="flex items-center gap-2 px-3 py-2 border-b border-slate-100 bg-slate-50">
                 <List size={14} className="text-blue-500" />
-                <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Indice</span>
+                <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Table of Contents</span>
               </div>
               <div className="py-1">
                 {outline.map((item, i) => (
@@ -290,12 +290,12 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
               }}
               loading={
                 <div className="flex items-center justify-center py-20">
-                  <span className="text-slate-400">Carregando PDF...</span>
+                  <span className="text-slate-400">Loading PDF...</span>
                 </div>
               }
               error={
                 <div className="flex items-center justify-center py-20">
-                  <span className="text-red-400">Erro ao carregar PDF</span>
+                  <span className="text-red-400">Error loading PDF</span>
                 </div>
               }
             >
@@ -329,7 +329,7 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
             <div className="flex items-center gap-2">
               <BookOpen size={16} className="text-blue-500" />
               <span className="text-sm font-medium text-slate-700">
-                Anotacoes
+                Notes
               </span>
               <span className="text-xs text-slate-400">
                 ({docNotes.data?.length || 0})
@@ -340,7 +340,7 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
               className="flex items-center gap-1 px-2 py-1 text-xs bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
             >
               <Plus size={12} />
-              Pagina {currentPage}
+              Page {currentPage}
             </button>
           </div>
 
@@ -358,7 +358,7 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
               >
                 <div className="flex items-center justify-between px-3 py-1.5 bg-slate-50 border-b border-slate-100">
                   <span className="text-xs text-slate-500">
-                    {note.pageNumber ? `Pagina ${note.pageNumber}` : "Geral"}
+                    {note.pageNumber ? `Page ${note.pageNumber}` : "General"}
                   </span>
                   <button
                     onClick={() => handleDeleteNote(note.id)}
@@ -377,9 +377,9 @@ export default function DocumentViewer({ documentId, onBack }: DocumentViewerPro
             {docNotes.data?.length === 0 && (
               <div className="text-center py-8">
                 <p className="text-xs text-slate-400">
-                  Nenhuma anotacao ainda.
+                  No notes yet.
                   <br />
-                  Clique em + para adicionar.
+                  Click + to add one.
                 </p>
               </div>
             )}
@@ -471,7 +471,7 @@ function SummaryEditor({ documentId, initialSummary }: { documentId: string; ini
     extensions: [
       StarterKit,
       Placeholder.configure({
-        placeholder: "Escreva um resumo geral do documento...",
+        placeholder: "Write a general summary of the document...",
       }),
     ],
     content: parseContent(),
@@ -489,7 +489,7 @@ function SummaryEditor({ documentId, initialSummary }: { documentId: string; ini
     <div className="border border-amber-200 rounded-lg overflow-hidden bg-amber-50/30">
       <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 border-b border-amber-200">
         <FileText size={12} className="text-amber-600" />
-        <span className="text-xs font-medium text-amber-700">Resumo Geral</span>
+        <span className="text-xs font-medium text-amber-700">General Summary</span>
       </div>
       <EditorContent editor={editor} />
     </div>

@@ -65,7 +65,7 @@ export default function EditorToolbar({ editor }: EditorToolbarProps) {
   };
 
   const addImage = () => {
-    const url = window.prompt("URL da imagem:");
+    const url = window.prompt("Image URL:");
     if (url) {
       editor.chain().focus().setImage({ src: url }).run();
     }
@@ -82,12 +82,12 @@ export default function EditorToolbar({ editor }: EditorToolbarProps) {
       <ToolbarButton
         onClick={() => editor.chain().focus().undo().run()}
         icon={<Undo2 size={s} />}
-        title="Desfazer"
+        title="Undo"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().redo().run()}
         icon={<Redo2 size={s} />}
-        title="Refazer"
+        title="Redo"
       />
 
       <Divider />
@@ -96,19 +96,19 @@ export default function EditorToolbar({ editor }: EditorToolbarProps) {
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
         isActive={editor.isActive("heading", { level: 1 })}
         icon={<Heading1 size={s} />}
-        title="Titulo 1"
+        title="Heading 1"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         isActive={editor.isActive("heading", { level: 2 })}
         icon={<Heading2 size={s} />}
-        title="Titulo 2"
+        title="Heading 2"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         isActive={editor.isActive("heading", { level: 3 })}
         icon={<Heading3 size={s} />}
-        title="Titulo 3"
+        title="Heading 3"
       />
 
       <Divider />
@@ -117,37 +117,37 @@ export default function EditorToolbar({ editor }: EditorToolbarProps) {
         onClick={() => editor.chain().focus().toggleBold().run()}
         isActive={editor.isActive("bold")}
         icon={<Bold size={s} />}
-        title="Negrito"
+        title="Bold"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleItalic().run()}
         isActive={editor.isActive("italic")}
         icon={<Italic size={s} />}
-        title="Italico"
+        title="Italic"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleUnderline().run()}
         isActive={editor.isActive("underline")}
         icon={<UnderlineIcon size={s} />}
-        title="Sublinhado"
+        title="Underline"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleStrike().run()}
         isActive={editor.isActive("strike")}
         icon={<Strikethrough size={s} />}
-        title="Riscado"
+        title="Strikethrough"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleHighlight().run()}
         isActive={editor.isActive("highlight")}
         icon={<Highlighter size={s} />}
-        title="Destacar"
+        title="Highlight"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleCode().run()}
         isActive={editor.isActive("code")}
         icon={<Code size={s} />}
-        title="Codigo inline"
+        title="Inline code"
       />
 
       <Divider />
@@ -156,13 +156,13 @@ export default function EditorToolbar({ editor }: EditorToolbarProps) {
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         isActive={editor.isActive("bulletList")}
         icon={<List size={s} />}
-        title="Lista"
+        title="Bullet list"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
         isActive={editor.isActive("orderedList")}
         icon={<ListOrdered size={s} />}
-        title="Lista numerada"
+        title="Numbered list"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleTaskList().run()}
@@ -177,25 +177,25 @@ export default function EditorToolbar({ editor }: EditorToolbarProps) {
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
         isActive={editor.isActive("blockquote")}
         icon={<Quote size={s} />}
-        title="Citacao"
+        title="Blockquote"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
         isActive={editor.isActive("codeBlock")}
         icon={<CodeSquare size={s} />}
-        title="Bloco de codigo"
+        title="Code block"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
         icon={<Minus size={s} />}
-        title="Linha horizontal"
+        title="Horizontal rule"
       />
 
       <Divider />
 
       <ToolbarButton onClick={addLink} isActive={editor.isActive("link")} icon={<LinkIcon size={s} />} title="Link" />
-      <ToolbarButton onClick={addImage} icon={<ImageIcon size={s} />} title="Imagem" />
-      <ToolbarButton onClick={addTable} icon={<TableIcon size={s} />} title="Tabela" />
+      <ToolbarButton onClick={addImage} icon={<ImageIcon size={s} />} title="Image" />
+      <ToolbarButton onClick={addTable} icon={<TableIcon size={s} />} title="Table" />
 
       <Divider />
 
@@ -203,19 +203,19 @@ export default function EditorToolbar({ editor }: EditorToolbarProps) {
         onClick={() => editor.chain().focus().setTextAlign("left").run()}
         isActive={editor.isActive({ textAlign: "left" })}
         icon={<AlignLeft size={s} />}
-        title="Alinhar esquerda"
+        title="Align left"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().setTextAlign("center").run()}
         isActive={editor.isActive({ textAlign: "center" })}
         icon={<AlignCenter size={s} />}
-        title="Centralizar"
+        title="Center"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().setTextAlign("right").run()}
         isActive={editor.isActive({ textAlign: "right" })}
         icon={<AlignRight size={s} />}
-        title="Alinhar direita"
+        title="Align right"
       />
     </div>
   );

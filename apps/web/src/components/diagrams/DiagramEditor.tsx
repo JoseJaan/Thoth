@@ -19,7 +19,7 @@ class ExcalidrawErrorBoundary extends Component<
     if (this.state.hasError) {
       return (
         <div className="flex flex-col items-center justify-center h-full gap-3 text-slate-500">
-          <p className="text-sm">Erro ao renderizar o diagrama.</p>
+          <p className="text-sm">Error rendering the diagram.</p>
           <button
             onClick={() => {
               this.setState({ hasError: false });
@@ -27,7 +27,7 @@ class ExcalidrawErrorBoundary extends Component<
             }}
             className="px-3 py-1.5 text-xs bg-purple-500 text-white rounded-lg hover:bg-purple-600"
           >
-            Tentar novamente
+            Try again
           </button>
         </div>
       );
@@ -229,7 +229,7 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
         <div className="flex-1" />
 
         {updateDiagram.isPending && (
-          <span className="text-xs text-slate-400">Salvando...</span>
+          <span className="text-xs text-slate-400">Saving...</span>
         )}
 
         <button
@@ -237,7 +237,7 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
           className="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
         >
           <Save size={13} />
-          Salvar thumbnail
+          Save thumbnail
         </button>
       </div>
 
@@ -258,13 +258,13 @@ export default function DiagramEditor({ diagramId, onBack }: DiagramEditorProps)
                   files: initialFiles,
                 }}
                 onChange={handleChange}
-                langCode="pt-BR"
+                langCode="en"
               />
             </div>
           </ExcalidrawErrorBoundary>
         ) : (
           <div className="flex items-center justify-center h-full">
-            <span className="text-slate-400">Carregando...</span>
+            <span className="text-slate-400">Loading...</span>
           </div>
         )}
       </div>

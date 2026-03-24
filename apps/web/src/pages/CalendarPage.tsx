@@ -2,22 +2,22 @@ import { useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight, Flag } from "lucide-react";
 import { trpc } from "../trpc";
 
-const WEEKDAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"];
+const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTH_NAMES = [
-  "Janeiro", "Fevereiro", "Marco", "Abril", "Maio", "Junho",
-  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
 ];
 
 const priorityConfig = {
-  low: { label: "Baixa", color: "#94a3b8", icon: "↓" },
-  medium: { label: "Media", color: "#f59e0b", icon: "→" },
-  high: { label: "Alta", color: "#ef4444", icon: "↑" },
+  low: { label: "Low", color: "#94a3b8", icon: "↓" },
+  medium: { label: "Medium", color: "#f59e0b", icon: "→" },
+  high: { label: "High", color: "#ef4444", icon: "↑" },
 };
 
 const statusConfig: Record<string, { label: string; color: string }> = {
-  todo: { label: "A fazer", color: "#94a3b8" },
-  in_progress: { label: "Em progresso", color: "#3b82f6" },
-  done: { label: "Concluido", color: "#10b981" },
+  todo: { label: "To do", color: "#94a3b8" },
+  in_progress: { label: "In progress", color: "#3b82f6" },
+  done: { label: "Done", color: "#10b981" },
 };
 
 function getDaysInMonth(year: number, month: number) {
@@ -95,14 +95,14 @@ export default function CalendarPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-xl font-bold text-slate-800">Calendario</h2>
-            <p className="text-sm text-slate-400">Visualize suas tarefas por data</p>
+            <h2 className="text-xl font-bold text-slate-800">Calendar</h2>
+            <p className="text-sm text-slate-400">View your tasks by date</p>
           </div>
           <button
             onClick={goToToday}
             className="px-3 py-1.5 text-sm border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
           >
-            Hoje
+            Today
           </button>
         </div>
 
@@ -199,7 +199,7 @@ export default function CalendarPage() {
                   })}
                   {dayTasks.length > 3 && (
                     <span className="text-[9px] text-slate-400 px-1">
-                      +{dayTasks.length - 3} mais
+                      +{dayTasks.length - 3} more
                     </span>
                   )}
                 </div>
@@ -214,7 +214,7 @@ export default function CalendarPage() {
         <div className="w-80 border-l border-slate-200 bg-white flex flex-col shrink-0">
           <div className="px-4 py-3 border-b border-slate-100">
             <h3 className="text-sm font-semibold text-slate-700">
-              {new Date(selectedDate + "T12:00:00").toLocaleDateString("pt-BR", {
+              {new Date(selectedDate + "T12:00:00").toLocaleDateString("en-US", {
                 weekday: "long",
                 day: "numeric",
                 month: "long",
@@ -222,15 +222,15 @@ export default function CalendarPage() {
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
               {selectedTasks.length === 0
-                ? "Nenhuma tarefa"
-                : `${selectedTasks.length} tarefa${selectedTasks.length > 1 ? "s" : ""}`}
+                ? "No tasks"
+                : `${selectedTasks.length} task${selectedTasks.length > 1 ? "s" : ""}`}
             </p>
           </div>
 
           <div className="flex-1 overflow-auto p-3 space-y-2">
             {selectedTasks.length === 0 ? (
               <div className="text-center py-8 text-sm text-slate-400">
-                Sem tarefas para este dia
+                No tasks for this day
               </div>
             ) : (
               selectedTasks.map((task: any) => {
@@ -276,7 +276,7 @@ export default function CalendarPage() {
                       </span>
                       {isOverdue && (
                         <span className="text-[10px] font-medium text-red-500 px-1.5 py-0.5 rounded-full bg-red-100">
-                          Atrasada
+                          Overdue
                         </span>
                       )}
                     </div>

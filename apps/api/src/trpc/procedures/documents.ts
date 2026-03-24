@@ -217,7 +217,7 @@ export const documentsRouter = router({
 
           imported.push(id);
         } catch (err) {
-          console.error(`Erro ao importar ${entry.name}:`, err);
+          console.error(`Error importing ${entry.name}:`, err);
         }
       }
 
@@ -279,7 +279,7 @@ export const documentsRouter = router({
 
             totalImported++;
           } catch (err) {
-            console.error(`Erro ao sincronizar ${entry.name}:`, err);
+            console.error(`Error syncing ${entry.name}:`, err);
           }
         }
       }

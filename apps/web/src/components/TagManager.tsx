@@ -99,14 +99,14 @@ export default function TagManager({ entityId, entityType }: TagManagerProps) {
 
           {/* Create new */}
           <div>
-            <p className="text-[10px] text-slate-400 uppercase mb-1">Criar nova</p>
+            <p className="text-[10px] text-slate-400 uppercase mb-1">Create new</p>
             <div className="flex gap-2">
               <input
                 type="text"
                 value={newTagName}
                 onChange={(e) => setNewTagName(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleCreateAndAdd()}
-                placeholder="Nome da tag"
+                placeholder="Tag name"
                 className="flex-1 px-2 py-1 text-xs border border-slate-200 rounded outline-none focus:border-indigo-400"
                 autoFocus
               />
@@ -115,7 +115,7 @@ export default function TagManager({ entityId, entityType }: TagManagerProps) {
                 disabled={!newTagName.trim()}
                 className="px-2 py-1 text-xs bg-indigo-500 text-white rounded hover:bg-indigo-600 disabled:opacity-50"
               >
-                Criar
+                Create
               </button>
             </div>
             <div className="flex gap-1.5 mt-1.5">

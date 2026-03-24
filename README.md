@@ -1,35 +1,35 @@
 # Thoth
 
-**Ferramenta pessoal de estudos para TCC** -- uma aplicacao local que combina funcionalidades de Notion, Excalidraw e Obsidian em um unico ambiente integrado para organizar pesquisas, anotacoes, documentos e tarefas academicas.
+**Personal study tool for thesis work** -- a local application that combines features from Notion, Excalidraw, and Obsidian into a single integrated environment for organizing research, notes, documents, and academic tasks.
 
-## Funcionalidades
+## Features
 
-| Funcionalidade | Descricao |
+| Feature | Description |
 |---|---|
-| **Notas** | Editor rich-text com Tiptap (listas, tabelas, codigo, imagens, links) e organizacao hierarquica em pastas |
-| **Documentos/PDFs** | Upload, visualizacao inline com scroll continuo, extracao de texto, status de leitura, resumo geral e anotacoes por pagina. Importacao de pastas via explorador de arquivos |
-| **Diagramas** | Editor visual com Excalidraw para criar diagramas, fluxogramas e esquemas |
-| **Tarefas/Kanban** | Quadro Kanban com colunas (A Fazer, Em Progresso, Concluido), drag-and-drop, prioridades e datas de entrega |
-| **Pomodoro** | Timer integrado (25min) vinculavel a tarefas para controle de foco |
-| **Flashcards SM-2** | Sistema de repeticao espacada com algoritmo SM-2 para memorizacao eficiente |
-| **Tags** | Sistema polimorfico de tags com cores para categorizar notas, documentos, diagramas e tarefas |
-| **Busca Global** | Pesquisa unificada em notas, documentos, diagramas e tarefas (Ctrl+Shift+K) |
-| **Links** | Conexoes bidirecionais entre qualquer entidade do sistema |
-| **Quick Capture** | Criacao rapida de notas e tarefas com Ctrl+Shift+N |
+| **Notes** | Rich-text editor with Tiptap (lists, tables, code, images, links) and hierarchical folder organization |
+| **Documents/PDFs** | Upload, inline viewing with continuous scroll, text extraction, reading status, general summary, and per-page notes. Folder import via file explorer |
+| **Diagrams** | Visual editor with Excalidraw for creating diagrams, flowcharts, and schemas |
+| **Tasks/Kanban** | Kanban board with columns (To Do, In Progress, Done), drag-and-drop, priorities, and due dates |
+| **Pomodoro** | Built-in timer (25min) that can be linked to tasks for focus tracking |
+| **Flashcards SM-2** | Spaced repetition system with SM-2 algorithm for efficient memorization |
+| **Tags** | Polymorphic tag system with colors for categorizing notes, documents, diagrams, and tasks |
+| **Global Search** | Unified search across notes, documents, diagrams, and tasks (Ctrl+Shift+K) |
+| **Links** | Bidirectional connections between any entity in the system |
+| **Quick Capture** | Quickly create notes and tasks with Ctrl+Shift+N |
 
-## Arquitetura
+## Architecture
 
-### Estrutura do Monorepo
+### Monorepo Structure
 
 ```mermaid
 graph TB
     subgraph Monorepo["Thoth (pnpm workspace)"]
         subgraph Apps["apps/"]
-            WEB["@thoth/web<br/>React + Vite<br/>Porta 5173"]
-            API["@thoth/api<br/>Fastify + tRPC<br/>Porta 3001"]
+            WEB["@thoth/web<br/>React + Vite<br/>Port 5173"]
+            API["@thoth/api<br/>Fastify + tRPC<br/>Port 3001"]
         end
         subgraph Packages["packages/"]
-            SHARED["@thoth/shared<br/>Tipos compartilhados"]
+            SHARED["@thoth/shared<br/>Shared types"]
         end
     end
 
@@ -42,7 +42,7 @@ graph TB
     style SHARED fill:#8b5cf6,color:#fff
 ```
 
-### Stack Tecnologica
+### Technology Stack
 
 ```mermaid
 graph LR
@@ -56,7 +56,7 @@ graph LR
         RPDF["react-pdf"]
     end
 
-    subgraph Comunicacao
+    subgraph Communication
         TRPC_C["@trpc/client"]
         TQ["TanStack Query"]
         TRPC_S["@trpc/server"]
@@ -68,7 +68,7 @@ graph LR
         ZOD["Zod"]
     end
 
-    subgraph Banco
+    subgraph Database
         SQLITE["SQLite<br/>(better-sqlite3)"]
     end
 
@@ -85,47 +85,47 @@ graph LR
     style DRIZZLE fill:#c5f74f,color:#000
 ```
 
-## Pre-requisitos
+## Prerequisites
 
 - **Node.js** >= 20.0.0
-- **pnpm** (gerenciador de pacotes)
-- **Docker** (opcional, para execucao via container)
+- **pnpm** (package manager)
+- **Docker** (optional, for container-based execution)
 
-## Inicio Rapido
+## Quick Start
 
-### Desenvolvimento local
+### Local Development
 
 ```bash
-# 1. Clonar o repositorio
+# 1. Clone the repository
 git clone <repo-url>
 cd thoth
 
-# 2. Instalar dependencias
+# 2. Install dependencies
 pnpm install
 
-# 3. Executar as migracoes do banco de dados
+# 3. Run database migrations
 pnpm db:migrate
 
-# 4. Iniciar em modo de desenvolvimento (API + Web simultaneamente)
+# 4. Start in development mode (API + Web simultaneously)
 pnpm dev
 ```
 
-A aplicacao estara disponivel em:
+The application will be available at:
 - **Frontend:** http://localhost:5173
 - **API:** http://localhost:3001
 
 ### Docker
 
 ```bash
-# Construir e iniciar
+# Build and start
 docker compose up -d
 
-# A aplicacao estara disponivel em http://localhost:3001
+# The application will be available at http://localhost:3001
 ```
 
-O container serve tanto a API quanto o frontend buildado em uma unica porta (3001). Os dados (SQLite + PDFs) sao persistidos no volume `./data`.
+The container serves both the API and the built frontend on a single port (3001). Data (SQLite + PDFs) is persisted in the `./data` volume.
 
-## Estrutura do Projeto
+## Project Structure
 
 ```
 thoth/
@@ -133,15 +133,15 @@ thoth/
 │   ├── api/                        # Backend (Fastify + tRPC)
 │   │   ├── src/
 │   │   │   ├── db/
-│   │   │   │   ├── schema.ts       # Definicao das tabelas (Drizzle)
-│   │   │   │   ├── index.ts        # Conexao com SQLite
-│   │   │   │   ├── migrate.ts      # Script de migracao
-│   │   │   │   └── migrations/     # Arquivos SQL gerados
+│   │   │   │   ├── schema.ts       # Table definitions (Drizzle)
+│   │   │   │   ├── index.ts        # SQLite connection
+│   │   │   │   ├── migrate.ts      # Migration script
+│   │   │   │   └── migrations/     # Generated SQL files
 │   │   │   ├── trpc/
-│   │   │   │   ├── router.ts       # Router principal
-│   │   │   │   ├── trpc.ts         # Configuracao do tRPC
-│   │   │   │   ├── context.ts      # Contexto (db)
-│   │   │   │   └── procedures/     # Routers por dominio
+│   │   │   │   ├── router.ts       # Main router
+│   │   │   │   ├── trpc.ts         # tRPC configuration
+│   │   │   │   ├── context.ts      # Context (db)
+│   │   │   │   └── procedures/     # Domain routers
 │   │   │   │       ├── notes.ts
 │   │   │   │       ├── documents.ts
 │   │   │   │       ├── diagrams.ts
@@ -152,11 +152,11 @@ thoth/
 │   │   │   │       ├── search.ts
 │   │   │   │       └── health.ts
 │   │   │   ├── services/
-│   │   │   │   ├── storage.ts      # Gerenciamento de PDFs
-│   │   │   │   └── pdf.ts          # Extracao de texto
+│   │   │   │   ├── storage.ts      # PDF management
+│   │   │   │   └── pdf.ts          # Text extraction
 │   │   │   ├── utils/
-│   │   │   │   └── id.ts           # Geracao de IDs (nanoid)
-│   │   │   ├── config.ts           # Configuracoes
+│   │   │   │   └── id.ts           # ID generation (nanoid)
+│   │   │   ├── config.ts           # Configuration
 │   │   │   └── index.ts            # Entry point
 │   │   └── package.json
 │   │
@@ -191,25 +191,25 @@ thoth/
 │       │   │   └── useDebounce.ts
 │       │   ├── lib/
 │       │   │   └── utils.ts
-│       │   ├── trpc.ts             # Cliente tRPC
+│       │   ├── trpc.ts             # tRPC client
 │       │   ├── App.tsx
 │       │   ├── main.tsx
-│       │   └── app.css             # Variaveis CSS / tema
+│       │   └── app.css             # CSS variables / theme
 │       └── package.json
 │
 ├── packages/
-│   └── shared/                     # Tipos compartilhados
+│   └── shared/                     # Shared types
 │       └── package.json
 │
 ├── package.json                    # Root workspace
 ├── pnpm-workspace.yaml
-├── Dockerfile                     # Build multi-stage
-├── docker-compose.yml             # Orquestracao
+├── Dockerfile                     # Multi-stage build
+├── docker-compose.yml             # Orchestration
 ├── .dockerignore
 └── CLAUDE.md
 ```
 
-## Esquema do Banco de Dados
+## Database Schema
 
 ```mermaid
 erDiagram
@@ -225,7 +225,7 @@ erDiagram
         text created_at
         text updated_at
     }
-    notes ||--o{ notes : "hierarquia"
+    notes ||--o{ notes : "hierarchy"
 
     document_folders {
         text id PK
@@ -234,7 +234,7 @@ erDiagram
         integer sort_order
         text created_at
     }
-    document_folders ||--o{ document_folders : "subpastas"
+    document_folders ||--o{ document_folders : "subfolders"
 
     documents {
         text id PK
@@ -250,7 +250,7 @@ erDiagram
         text created_at
         text updated_at
     }
-    document_folders ||--o{ documents : "contem"
+    document_folders ||--o{ documents : "contains"
 
     document_notes {
         text id PK
@@ -261,7 +261,7 @@ erDiagram
         text created_at
         text updated_at
     }
-    documents ||--o{ document_notes : "anotacoes"
+    documents ||--o{ document_notes : "annotations"
 
     diagrams {
         text id PK
@@ -291,7 +291,7 @@ erDiagram
         text started_at
         text completed_at
     }
-    tasks ||--o{ pomodoro_sessions : "sessoes"
+    tasks ||--o{ pomodoro_sessions : "sessions"
 
     flashcards {
         text id PK
@@ -313,7 +313,7 @@ erDiagram
         integer rating
         text reviewed_at
     }
-    flashcards ||--o{ flashcard_reviews : "revisoes"
+    flashcards ||--o{ flashcard_reviews : "reviews"
 
     tags {
         text id PK
@@ -326,7 +326,7 @@ erDiagram
         text taggable_id
         text taggable_type
     }
-    tags ||--o{ taggables : "associacoes"
+    tags ||--o{ taggables : "associations"
 
     links {
         text source_id
@@ -337,17 +337,17 @@ erDiagram
     }
 ```
 
-## Atalhos de Teclado
+## Keyboard Shortcuts
 
-| Atalho | Acao |
+| Shortcut | Action |
 |---|---|
-| `Ctrl + N` | Quick Capture -- criar nota rapida |
-| `Ctrl + K` | Busca Global -- pesquisar em todo o sistema |
+| `Ctrl + N` | Quick Capture -- create a quick note |
+| `Ctrl + K` | Global Search -- search across the entire system |
 
 ## Screenshots
 
-> _Secao reservada para capturas de tela da aplicacao._
+> _Section reserved for application screenshots._
 
-## Licenca
+## License
 
-Projeto pessoal e privado, desenvolvido como ferramenta de apoio ao TCC. Nao destinado a distribuicao ou uso comercial.
+Personal and private project, developed as a support tool for thesis work. Not intended for distribution or commercial use.

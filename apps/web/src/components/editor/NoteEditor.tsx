@@ -68,7 +68,7 @@ export default function NoteEditor({ note }: NoteEditorProps) {
         underline: false,
       }),
       Placeholder.configure({
-        placeholder: "Comece a escrever...",
+        placeholder: "Start writing...",
       }),
       TaskList,
       TaskItem.configure({ nested: true }),
@@ -110,7 +110,7 @@ export default function NoteEditor({ note }: NoteEditorProps) {
           type="text"
           value={title}
           onChange={(e) => handleTitleChange(e.target.value)}
-          placeholder="Sem titulo"
+          placeholder="Untitled"
           className="w-full text-3xl font-bold text-slate-800 outline-none border-none bg-transparent placeholder:text-slate-300"
         />
         <div className="mt-2">
@@ -128,11 +128,11 @@ export default function NoteEditor({ note }: NoteEditorProps) {
 
       {/* Status bar */}
       <div className="px-8 py-2 border-t border-slate-100 flex items-center gap-4 text-xs text-slate-400">
-        {updateNote.isPending && <span>Salvando...</span>}
-        {updateNote.isSuccess && <span>Salvo</span>}
+        {updateNote.isPending && <span>Saving...</span>}
+        {updateNote.isSuccess && <span>Saved</span>}
         {editor && (
           <span>
-            {editor.storage.characterCount?.characters?.() ?? editor.getText().length} caracteres
+            {editor.storage.characterCount?.characters?.() ?? editor.getText().length} characters
           </span>
         )}
       </div>

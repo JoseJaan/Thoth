@@ -3,7 +3,7 @@ import { sqliteTable, text, integer, primaryKey } from "drizzle-orm/sqlite-core"
 // ===== Notes =====
 export const notes = sqliteTable("notes", {
   id: text("id").primaryKey(),
-  title: text("title").notNull().default("Sem título"),
+  title: text("title").notNull().default("Untitled"),
   content: text("content").notNull().default("{}"),
   contentText: text("content_text").notNull().default(""),
   parentId: text("parent_id").references((): any => notes.id, { onDelete: "set null" }),
@@ -54,7 +54,7 @@ export const documentNotes = sqliteTable("document_notes", {
 // ===== Diagrams =====
 export const diagrams = sqliteTable("diagrams", {
   id: text("id").primaryKey(),
-  title: text("title").notNull().default("Sem título"),
+  title: text("title").notNull().default("Untitled"),
   data: text("data").notNull().default("{}"),
   thumbnail: text("thumbnail"),
   createdAt: text("created_at").notNull(),
