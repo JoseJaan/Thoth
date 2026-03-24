@@ -1,6 +1,6 @@
 # Thoth
 
-**Personal study tool for thesis work** -- a local application that combines features from Notion, Excalidraw, and Obsidian into a single integrated environment for organizing research, notes, documents, and academic tasks.
+**Personal study tool.** A local application that combines features from Notion, Excalidraw, and Obsidian into a single integrated environment for organizing research, notes, documents, and academic tasks.
 
 ## Features
 
@@ -343,11 +343,3 @@ erDiagram
 |---|---|
 | `Ctrl + N` | Quick Capture -- create a quick note |
 | `Ctrl + K` | Global Search -- search across the entire system |
-
-## Screenshots
-
-> _Section reserved for application screenshots._
-
-## License
-
-Personal and private project, developed as a support tool for thesis work. Not intended for distribution or commercial use.
