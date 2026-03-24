@@ -68,15 +68,22 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
   const handleFileUpload = async (files: FileList) => {
     for (const file of Array.from(files)) {
       if (!file.name.toLowerCase().endsWith(".pdf")) continue;
-      const buffer = await file.arrayBuffer();
-      const base64 = btoa(
-        new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), "")
-      );
-      await uploadDoc.mutateAsync({
-        fileName: file.name,
-        fileData: base64,
-        folderId: currentFolderId,
-      });
+      try {
+        const buffer = await file.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
+        const chunks: string[] = [];
+        for (let i = 0; i < bytes.length; i += 8192) {
+          chunks.push(String.fromCharCode(...bytes.subarray(i, i + 8192)));
+        }
+        const base64 = btoa(chunks.join(""));
+        await uploadDoc.mutateAsync({
+          fileName: file.name,
+          fileData: base64,
+          folderId: currentFolderId,
+        });
+      } catch (err) {
+        console.error(`Erro ao fazer upload de ${file.name}:`, err);
+      }
     }
     utils.documents.list.invalidate();
   };
@@ -196,21 +203,39 @@ export default function DocumentsPage({ selectedDocId: externalSelectedId, onSel
                     f.name.toLowerCase().endsWith(".pdf")
                   );
                   if (pdfFiles.length === 0) return;
+
+                  // Extract folder name from webkitRelativePath
+                  const firstPath = pdfFiles[0].webkitRelativePath;
+                  const folderName = firstPath ? firstPath.split("/")[0] : "Importados";
+
+                  // Create a folder for the imported files
+                  const folder = await createFolder.mutateAsync({
+                    name: folderName,
+                    parentId: currentFolderId,
+                  });
+
                   for (const file of pdfFiles) {
-                    const buffer = await file.arrayBuffer();
-                    const base64 = btoa(
-                      new Uint8Array(buffer).reduce(
-                        (data, byte) => data + String.fromCharCode(byte),
-                        ""
-                      )
-                    );
-                    await uploadDoc.mutateAsync({
-                      fileName: file.name,
-                      fileData: base64,
-                      folderId: currentFolderId,
-                    });
+                    try {
+                      const buffer = await file.arrayBuffer();
+                      const bytes = new Uint8Array(buffer);
+                      const chunks: string[] = [];
+                      for (let i = 0; i < bytes.length; i += 8192) {
+                        chunks.push(String.fromCharCode(...bytes.subarray(i, i + 8192)));
+                      }
+                      const base64 = btoa(chunks.join(""));
+                      await uploadDoc.mutateAsync({
+                        fileName: file.name,
+                        fileData: base64,
+                        folderId: folder.id,
+                      });
+                    } catch (err) {
+                      console.error(`Erro ao fazer upload de ${file.name}:`, err);
+                    }
                   }
+
                   utils.documents.list.invalidate();
+                  utils.documents.listFolders.invalidate();
+                  setCurrentFolderId(folder.id);
                   setShowImportFolder(false);
                 }}
               />

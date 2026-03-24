@@ -3,7 +3,7 @@ import { eq, isNull, isNotNull, asc, desc } from "drizzle-orm";
 import { router, publicProcedure } from "../trpc.js";
 import { documents, documentFolders, documentNotes } from "../../db/schema.js";
 import { generateId, now } from "../../utils/id.js";
-import { savePdf, deletePdf, importFolder } from "../../services/storage.js";
+import { savePdf, deletePdf, listPdfsInFolder, readPdfFile } from "../../services/storage.js";
 import { extractTextFromPdf } from "../../services/pdf.js";
 import fs from "node:fs";
 import path from "node:path";
@@ -158,7 +158,7 @@ export const documentsRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const files = await importFolder(input.folderPath);
+      const pdfEntries = listPdfsInFolder(input.folderPath);
       const imported: string[] = [];
 
       // Create or update a tracked folder with the source path
@@ -190,30 +190,35 @@ export const documentsRouter = router({
         .where(eq(documents.folderId, folderId));
       const existingNames = new Set(existingDocs.map((d) => d.originalName));
 
-      for (const file of files) {
-        if (existingNames.has(file.name)) continue;
+      for (const entry of pdfEntries) {
+        if (existingNames.has(entry.name)) continue;
 
-        const { filePath } = savePdf(file.buffer, file.name);
-        const extractedText = await extractTextFromPdf(file.buffer);
+        try {
+          const { buffer, size } = readPdfFile(entry.fullPath);
+          const { filePath } = savePdf(buffer, entry.name);
+          const extractedText = await extractTextFromPdf(buffer);
 
-        const id = generateId();
-        const timestamp = now();
+          const id = generateId();
+          const timestamp = now();
 
-        await ctx.db.insert(documents).values({
-          id,
-          title: file.name.replace(/\.pdf$/i, ""),
-          authors: null,
-          filePath,
-          originalName: file.name,
-          fileSize: file.size,
-          readingStatus: "unread",
-          extractedText,
-          folderId,
-          createdAt: timestamp,
-          updatedAt: timestamp,
-        });
+          await ctx.db.insert(documents).values({
+            id,
+            title: entry.name.replace(/\.pdf$/i, ""),
+            authors: null,
+            filePath,
+            originalName: entry.name,
+            fileSize: size,
+            readingStatus: "unread",
+            extractedText,
+            folderId,
+            createdAt: timestamp,
+            updatedAt: timestamp,
+          });
 
-        imported.push(id);
+          imported.push(id);
+        } catch (err) {
+          console.error(`Erro ao importar ${entry.name}:`, err);
+        }
       }
 
       return { imported: imported.length, ids: imported, folderId };
@@ -233,9 +238,9 @@ export const documentsRouter = router({
         if (!folder.sourcePath) continue;
         if (!fs.existsSync(folder.sourcePath)) continue;
 
-        let files: Array<{ name: string; buffer: Buffer; size: number }>;
+        let pdfEntries: Array<{ name: string; fullPath: string }>;
         try {
-          files = await importFolder(folder.sourcePath);
+          pdfEntries = listPdfsInFolder(folder.sourcePath);
         } catch {
           continue;
         }
@@ -247,30 +252,35 @@ export const documentsRouter = router({
           .where(eq(documents.folderId, folder.id));
         const existingNames = new Set(existingDocs.map((d) => d.originalName));
 
-        for (const file of files) {
-          if (existingNames.has(file.name)) continue;
+        for (const entry of pdfEntries) {
+          if (existingNames.has(entry.name)) continue;
 
-          const { filePath } = savePdf(file.buffer, file.name);
-          const extractedText = await extractTextFromPdf(file.buffer);
+          try {
+            const { buffer, size } = readPdfFile(entry.fullPath);
+            const { filePath } = savePdf(buffer, entry.name);
+            const extractedText = await extractTextFromPdf(buffer);
 
-          const id = generateId();
-          const timestamp = now();
+            const id = generateId();
+            const timestamp = now();
 
-          await ctx.db.insert(documents).values({
-            id,
-            title: file.name.replace(/\.pdf$/i, ""),
-            authors: null,
-            filePath,
-            originalName: file.name,
-            fileSize: file.size,
-            readingStatus: "unread",
-            extractedText,
-            folderId: folder.id,
-            createdAt: timestamp,
-            updatedAt: timestamp,
-          });
+            await ctx.db.insert(documents).values({
+              id,
+              title: entry.name.replace(/\.pdf$/i, ""),
+              authors: null,
+              filePath,
+              originalName: entry.name,
+              fileSize: size,
+              readingStatus: "unread",
+              extractedText,
+              folderId: folder.id,
+              createdAt: timestamp,
+              updatedAt: timestamp,
+            });
 
-          totalImported++;
+            totalImported++;
+          } catch (err) {
+            console.error(`Erro ao sincronizar ${entry.name}:`, err);
+          }
         }
       }
 

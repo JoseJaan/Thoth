@@ -31,8 +31,8 @@ export function getPdfFullPath(relativePath: string): string {
   return path.join(config.uploadsDir, relativePath);
 }
 
-export async function importFolder(folderPath: string): Promise<Array<{ name: string; buffer: Buffer; size: number }>> {
-  const files: Array<{ name: string; buffer: Buffer; size: number }> = [];
+export function listPdfsInFolder(folderPath: string): Array<{ name: string; fullPath: string }> {
+  const results: Array<{ name: string; fullPath: string }> = [];
 
   if (!fs.existsSync(folderPath)) {
     throw new Error(`Pasta nao encontrada: ${folderPath}`);
@@ -41,16 +41,20 @@ export async function importFolder(folderPath: string): Promise<Array<{ name: st
   function scanDir(dirPath: string) {
     const entries = fs.readdirSync(dirPath, { withFileTypes: true });
     for (const entry of entries) {
-      const fullPath = path.join(dirPath, entry.name);
+      const entryPath = path.join(dirPath, entry.name);
       if (entry.isDirectory()) {
-        scanDir(fullPath);
+        scanDir(entryPath);
       } else if (entry.isFile() && entry.name.toLowerCase().endsWith(".pdf")) {
-        const buffer = fs.readFileSync(fullPath);
-        files.push({ name: entry.name, buffer, size: buffer.length });
+        results.push({ name: entry.name, fullPath: entryPath });
       }
     }
   }
 
   scanDir(folderPath);
-  return files;
+  return results;
+}
+
+export function readPdfFile(fullPath: string): { buffer: Buffer; size: number } {
+  const buffer = fs.readFileSync(fullPath);
+  return { buffer, size: buffer.length };
 }

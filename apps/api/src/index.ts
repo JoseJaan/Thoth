@@ -24,7 +24,7 @@ if (fs.existsSync(migrationsFolder)) {
   console.log("Migrations applied successfully.");
 }
 
-const app = Fastify({ logger: true });
+const app = Fastify({ logger: true, bodyLimit: 104857600 }); // 100MB
 
 await app.register(cors, { origin: true });
 
