@@ -184,7 +184,7 @@ export default function Sidebar({
       <div className="px-4 py-4 border-b border-[var(--color-border)]">
         <button
           onClick={() => onPageChange("dashboard")}
-          className="text-xl font-bold bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-diagrams)] to-[var(--color-flashcards)] bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+          className="text-xl font-bold text-[#7c3aed] hover:opacity-80 transition-opacity"
         >
           Thoth
         </button>

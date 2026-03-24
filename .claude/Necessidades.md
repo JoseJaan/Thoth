@@ -1,3 +1,4 @@
-- Gestão de documentos não está fazendo o import de todos os PDF
-- Não é sincronizado ao clicar em sincronizar
-- Em vez de exibir "Bem vindo ao Thoth" e um subtitulo, substitua por mensagens de cumprimento, como "Bom dia!", "Bons estudos!", ou piadas clichês
+- ~~Gestão de documentos não está fazendo o import de todos os PDF~~ (Concluido: importFolder agora varre subpastas recursivamente)
+- ~~Não é sincronizado ao clicar em sincronizar~~ (Concluido: corrigido junto com o fix recursivo do importFolder)
+- ~~Altere a cor do "Thoth" para um roxo sólido~~ (Concluido: alterado para #7c3aed)
+

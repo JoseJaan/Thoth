@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   FileText,
   BookOpen,
@@ -5,18 +6,34 @@ import {
   CheckSquare,
   Brain,
   Sparkles,
-  Clock,
-  Target,
-  TrendingUp,
   Zap,
 } from "lucide-react";
 import { trpc } from "../trpc";
+
+function getGreeting(): { title: string; subtitle: string } {
+  const hour = new Date().getHours();
+
+  const timeGreeting =
+    hour >= 5 && hour < 12
+      ? "Bom dia!"
+      : hour >= 12 && hour < 18
+        ? "Boa tarde!"
+        : "Boa noite!";
+
+  const subtitles = [
+    "Bons estudos!",
+  ];
+
+  const subtitle = subtitles[Math.floor(Math.random() * subtitles.length)];
+  return { title: timeGreeting, subtitle };
+}
 
 interface DashboardPageProps {
   onNavigate: (page: string) => void;
 }
 
 export default function DashboardPage({ onNavigate }: DashboardPageProps) {
+  const greeting = useMemo(() => getGreeting(), []);
   const notes = trpc.notes.list.useQuery({});
   const documents = trpc.documents.list.useQuery();
   const diagrams = trpc.diagrams.list.useQuery();
@@ -87,10 +104,10 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-800 mb-2">
-          Bem-vindo ao Thoth
+          {greeting.title}
         </h1>
         <p className="text-slate-500">
-          Sua ferramenta pessoal de estudos. Aqui esta um resumo do seu progresso.
+          {greeting.subtitle}
         </p>
       </div>
 

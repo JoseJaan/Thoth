@@ -38,14 +38,19 @@ export async function importFolder(folderPath: string): Promise<Array<{ name: st
     throw new Error(`Pasta nao encontrada: ${folderPath}`);
   }
 
-  const entries = fs.readdirSync(folderPath, { withFileTypes: true });
-  for (const entry of entries) {
-    if (entry.isFile() && entry.name.toLowerCase().endsWith(".pdf")) {
-      const fullPath = path.join(folderPath, entry.name);
-      const buffer = fs.readFileSync(fullPath);
-      files.push({ name: entry.name, buffer, size: buffer.length });
+  function scanDir(dirPath: string) {
+    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(dirPath, entry.name);
+      if (entry.isDirectory()) {
+        scanDir(fullPath);
+      } else if (entry.isFile() && entry.name.toLowerCase().endsWith(".pdf")) {
+        const buffer = fs.readFileSync(fullPath);
+        files.push({ name: entry.name, buffer, size: buffer.length });
+      }
     }
   }
 
+  scanDir(folderPath);
   return files;
 }
