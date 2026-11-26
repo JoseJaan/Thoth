@@ -1,35 +1,43 @@
 # Thoth
 
-**Personal study tool.** A local application that combines features from Notion, Excalidraw, and Obsidian into a single integrated environment for organizing research, notes, documents, and academic tasks.
+**Ferramenta pessoal de estudos.** Uma aplicação local que combina recursos do Notion, Excalidraw e Obsidian em um único ambiente integrado para organizar pesquisas, anotações, documentos e tarefas acadêmicas.
 
-## Features
+## Licença e Uso
 
-| Feature | Description |
+O uso deste software é **livre para atividades não comerciais**.
+
+Para qualquer uso com **finalidade comercial**, é necessário entrar em contato previamente com a **Universidade Federal de Lavras (UFLA)** para obter autorização.
+
+Os termos completos estão no arquivo [LICENSE](LICENSE).
+
+## Funcionalidades
+
+| Funcionalidade | Descrição |
 |---|---|
-| **Notes** | Rich-text editor with Tiptap (lists, tables, code, images, links) and hierarchical folder organization |
-| **Documents/PDFs** | Upload, inline viewing with continuous scroll, text extraction, reading status, general summary, and per-page notes. Folder import via file explorer |
-| **Diagrams** | Visual editor with Excalidraw for creating diagrams, flowcharts, and schemas |
-| **Tasks/Kanban** | Kanban board with columns (To Do, In Progress, Done), drag-and-drop, priorities, and due dates |
-| **Pomodoro** | Built-in timer (25min) that can be linked to tasks for focus tracking |
-| **Flashcards SM-2** | Spaced repetition system with SM-2 algorithm for efficient memorization |
-| **Tags** | Polymorphic tag system with colors for categorizing notes, documents, diagrams, and tasks |
-| **Global Search** | Unified search across notes, documents, diagrams, and tasks (Ctrl+Shift+K) |
-| **Links** | Bidirectional connections between any entity in the system |
-| **Quick Capture** | Quickly create notes and tasks with Ctrl+Shift+N |
+| **Anotações** | Editor de texto rico com Tiptap (listas, tabelas, código, imagens, links) e organização hierárquica em pastas |
+| **Documentos/PDFs** | Upload, visualização integrada com rolagem contínua, extração de texto, status de leitura, resumo geral e anotações por página. Importação de pastas pelo explorador de arquivos |
+| **Diagramas** | Editor visual com Excalidraw para criar diagramas, fluxogramas e esquemas |
+| **Tarefas/Kanban** | Quadro Kanban com colunas (A Fazer, Em Andamento, Concluído), arrastar e soltar, prioridades e prazos |
+| **Pomodoro** | Temporizador integrado (25min) que pode ser vinculado a tarefas para acompanhamento de foco |
+| **Flashcards SM-2** | Sistema de repetição espaçada com o algoritmo SM-2 para memorização eficiente |
+| **Tags** | Sistema polimórfico de tags com cores para categorizar anotações, documentos, diagramas e tarefas |
+| **Busca Global** | Busca unificada em anotações, documentos, diagramas e tarefas (Ctrl+Shift+K) |
+| **Vínculos** | Conexões bidirecionais entre quaisquer entidades do sistema |
+| **Captura Rápida** | Criação rápida de anotações e tarefas com Ctrl+Shift+N |
 
-## Architecture
+## Arquitetura
 
-### Monorepo Structure
+### Estrutura do Monorepo
 
 ```mermaid
 graph TB
     subgraph Monorepo["Thoth (pnpm workspace)"]
         subgraph Apps["apps/"]
-            WEB["@thoth/web<br/>React + Vite<br/>Port 5173"]
-            API["@thoth/api<br/>Fastify + tRPC<br/>Port 3001"]
+            WEB["@thoth/web<br/>React + Vite<br/>Porta 5173"]
+            API["@thoth/api<br/>Fastify + tRPC<br/>Porta 3001"]
         end
         subgraph Packages["packages/"]
-            SHARED["@thoth/shared<br/>Shared types"]
+            SHARED["@thoth/shared<br/>Tipos compartilhados"]
         end
     end
 
@@ -42,7 +50,7 @@ graph TB
     style SHARED fill:#8b5cf6,color:#fff
 ```
 
-### Technology Stack
+### Stack Tecnológica
 
 ```mermaid
 graph LR
@@ -56,7 +64,7 @@ graph LR
         RPDF["react-pdf"]
     end
 
-    subgraph Communication
+    subgraph Comunicacao["Comunicação"]
         TRPC_C["@trpc/client"]
         TQ["TanStack Query"]
         TRPC_S["@trpc/server"]
@@ -68,7 +76,7 @@ graph LR
         ZOD["Zod"]
     end
 
-    subgraph Database
+    subgraph BancoDeDados["Banco de Dados"]
         SQLITE["SQLite<br/>(better-sqlite3)"]
     end
 
@@ -85,47 +93,47 @@ graph LR
     style DRIZZLE fill:#c5f74f,color:#000
 ```
 
-## Prerequisites
+## Pré-requisitos
 
 - **Node.js** >= 20.0.0
-- **pnpm** (package manager)
-- **Docker** (optional, for container-based execution)
+- **pnpm** (gerenciador de pacotes)
+- **Docker** (opcional, para execução em contêiner)
 
-## Quick Start
+## Início Rápido
 
-### Local Development
+### Desenvolvimento Local
 
 ```bash
-# 1. Clone the repository
+# 1. Clone o repositório
 git clone <repo-url>
 cd thoth
 
-# 2. Install dependencies
+# 2. Instale as dependências
 pnpm install
 
-# 3. Run database migrations
+# 3. Execute as migrações do banco de dados
 pnpm db:migrate
 
-# 4. Start in development mode (API + Web simultaneously)
+# 4. Inicie em modo de desenvolvimento (API + Web simultaneamente)
 pnpm dev
 ```
 
-The application will be available at:
+A aplicação estará disponível em:
 - **Frontend:** http://localhost:5173
 - **API:** http://localhost:3001
 
 ### Docker
 
 ```bash
-# Build and start
+# Build e inicialização
 docker compose up -d
 
-# The application will be available at http://localhost:3001
+# A aplicação estará disponível em http://localhost:3001
 ```
 
-The container serves both the API and the built frontend on a single port (3001). Data (SQLite + PDFs) is persisted in the `./data` volume.
+O contêiner serve tanto a API quanto o frontend compilado em uma única porta (3001). Os dados (SQLite + PDFs) são persistidos no volume `./data`.
 
-## Project Structure
+## Estrutura do Projeto
 
 ```
 thoth/
@@ -133,15 +141,15 @@ thoth/
 │   ├── api/                        # Backend (Fastify + tRPC)
 │   │   ├── src/
 │   │   │   ├── db/
-│   │   │   │   ├── schema.ts       # Table definitions (Drizzle)
-│   │   │   │   ├── index.ts        # SQLite connection
-│   │   │   │   ├── migrate.ts      # Migration script
-│   │   │   │   └── migrations/     # Generated SQL files
+│   │   │   │   ├── schema.ts       # Definição das tabelas (Drizzle)
+│   │   │   │   ├── index.ts        # Conexão com o SQLite
+│   │   │   │   ├── migrate.ts      # Script de migração
+│   │   │   │   └── migrations/     # Arquivos SQL gerados
 │   │   │   ├── trpc/
-│   │   │   │   ├── router.ts       # Main router
-│   │   │   │   ├── trpc.ts         # tRPC configuration
-│   │   │   │   ├── context.ts      # Context (db)
-│   │   │   │   └── procedures/     # Domain routers
+│   │   │   │   ├── router.ts       # Router principal
+│   │   │   │   ├── trpc.ts         # Configuração do tRPC
+│   │   │   │   ├── context.ts      # Contexto (db)
+│   │   │   │   └── procedures/     # Routers por domínio
 │   │   │   │       ├── notes.ts
 │   │   │   │       ├── documents.ts
 │   │   │   │       ├── diagrams.ts
@@ -152,12 +160,12 @@ thoth/
 │   │   │   │       ├── search.ts
 │   │   │   │       └── health.ts
 │   │   │   ├── services/
-│   │   │   │   ├── storage.ts      # PDF management
-│   │   │   │   └── pdf.ts          # Text extraction
+│   │   │   │   ├── storage.ts      # Gerenciamento de PDFs
+│   │   │   │   └── pdf.ts          # Extração de texto
 │   │   │   ├── utils/
-│   │   │   │   └── id.ts           # ID generation (nanoid)
-│   │   │   ├── config.ts           # Configuration
-│   │   │   └── index.ts            # Entry point
+│   │   │   │   └── id.ts           # Geração de IDs (nanoid)
+│   │   │   ├── config.ts           # Configuração
+│   │   │   └── index.ts            # Ponto de entrada
 │   │   └── package.json
 │   │
 │   └── web/                        # Frontend (React + Vite)
@@ -191,25 +199,25 @@ thoth/
 │       │   │   └── useDebounce.ts
 │       │   ├── lib/
 │       │   │   └── utils.ts
-│       │   ├── trpc.ts             # tRPC client
+│       │   ├── trpc.ts             # Cliente tRPC
 │       │   ├── App.tsx
 │       │   ├── main.tsx
-│       │   └── app.css             # CSS variables / theme
+│       │   └── app.css             # Variáveis CSS / tema
 │       └── package.json
 │
 ├── packages/
-│   └── shared/                     # Shared types
+│   └── shared/                     # Tipos compartilhados
 │       └── package.json
 │
-├── package.json                    # Root workspace
+├── package.json                    # Workspace raiz
 ├── pnpm-workspace.yaml
-├── Dockerfile                     # Multi-stage build
-├── docker-compose.yml             # Orchestration
+├── Dockerfile                     # Build multi-stage
+├── docker-compose.yml             # Orquestração
 ├── .dockerignore
 └── CLAUDE.md
 ```
 
-## Database Schema
+## Esquema do Banco de Dados
 
 ```mermaid
 erDiagram
@@ -225,7 +233,7 @@ erDiagram
         text created_at
         text updated_at
     }
-    notes ||--o{ notes : "hierarchy"
+    notes ||--o{ notes : "hierarquia"
 
     document_folders {
         text id PK
@@ -234,7 +242,7 @@ erDiagram
         integer sort_order
         text created_at
     }
-    document_folders ||--o{ document_folders : "subfolders"
+    document_folders ||--o{ document_folders : "subpastas"
 
     documents {
         text id PK
@@ -250,7 +258,7 @@ erDiagram
         text created_at
         text updated_at
     }
-    document_folders ||--o{ documents : "contains"
+    document_folders ||--o{ documents : "contém"
 
     document_notes {
         text id PK
@@ -261,7 +269,7 @@ erDiagram
         text created_at
         text updated_at
     }
-    documents ||--o{ document_notes : "annotations"
+    documents ||--o{ document_notes : "anotações"
 
     diagrams {
         text id PK
@@ -291,7 +299,7 @@ erDiagram
         text started_at
         text completed_at
     }
-    tasks ||--o{ pomodoro_sessions : "sessions"
+    tasks ||--o{ pomodoro_sessions : "sessões"
 
     flashcards {
         text id PK
@@ -313,7 +321,7 @@ erDiagram
         integer rating
         text reviewed_at
     }
-    flashcards ||--o{ flashcard_reviews : "reviews"
+    flashcards ||--o{ flashcard_reviews : "revisões"
 
     tags {
         text id PK
@@ -326,7 +334,7 @@ erDiagram
         text taggable_id
         text taggable_type
     }
-    tags ||--o{ taggables : "associations"
+    tags ||--o{ taggables : "associações"
 
     links {
         text source_id
@@ -337,9 +345,9 @@ erDiagram
     }
 ```
 
-## Keyboard Shortcuts
+## Atalhos de Teclado
 
-| Shortcut | Action |
+| Atalho | Ação |
 |---|---|
-| `Ctrl + N` | Quick Capture -- create a quick note |
-| `Ctrl + K` | Global Search -- search across the entire system |
+| `Ctrl + Shift + N` | Captura Rápida: cria uma anotação rápida |
+| `Ctrl + Shift + K` | Busca Global: pesquisa em todo o sistema |
